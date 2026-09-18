@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BillingHub Documentation | Stripe Subscription & Security Portal</title>
+  <meta name="description" content="Official documentation for BillingHub: Android SaaS subscription billing, Stripe payment processing, and enterprise encryption standards.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+  <!-- Top Navigation Header -->
+  <header class="top-nav">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <span class="brand-title">BillingHub</span>
+        <span class="badge-status">v1.0 • Docs</span>
+      </div>
+      <div class="nav-actions">
+        <a href="#visual-guide" class="nav-link">4-Piece Guide</a>
+        <a href="#stripe-billing" class="nav-link">Stripe Integration</a>
+        <a href="#security-privacy" class="nav-link">Security & Privacy</a>
+        <a href="#setup-guide" class="nav-link">Setup</a>
+        <button id="theme-toggle" class="btn-icon" aria-label="Toggle Theme">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <div class="nav-group">
+          <span class="group-title">GETTING STARTED</span>
+          <a href="#overview" class="active">Overview & Architecture</a>
+          <a href="#visual-guide">4-Piece Visual Guide</a>
+        </div>
+        <div class="nav-group">
+          <span class="group-title">STRIPE INTEGRATION</span>
+          <a href="#stripe-billing">Payment Processing Flow</a>
+          <a href="#subscription-tiers">Subscription Tiers</a>
+          <a href="#webhooks">Webhook Telemetry & HMAC</a>
+          <a href="#test-cards">Sandbox Test Cards</a>
+        </div>
+        <div class="nav-group">
+          <span class="group-title">SECURITY & PRIVACY</span>
+          <a href="#encryption-standards">AES-256-GCM Encryption</a>
+          <a href="#transit-security">TLS 1.3 Strict & Pinning</a>
+          <a href="#hardware-keystore">Android Keystore HSM</a>
+          <a href="#data-privacy">User Info & GDPR/CCPA</a>
+        </div>
+        <div class="nav-group">
+          <span class="group-title">DEVELOPER GUIDE</span>
+          <a href="#setup-guide">Installation & Build</a>
+          <a href="#environment-vars">.env Configuration</a>
+          <a href="#github-pages">GitHub Pages Hosting</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Body -->
+    <main class="content-body">
+      <!-- Section 1: Overview -->
+      <section id="overview" class="doc-section">
+        <div class="hero-banner">
+          <span class="hero-badge">ENTERPRISE SAAS INFRASTRUCTURE</span>
+          <h1>BillingHub Developer & User Documentation</h1>
+          <p class="lead">
+            Turnkey Android SaaS architecture integrating <strong>Stripe recurring subscription billing</strong>, 
+            zero-knowledge card tokenization, hardware-backed <strong>Android Keystore encryption</strong>, and 
+            comprehensive <strong>GDPR/CCPA compliance</strong>.
+          </p>
+          <div class="hero-meta">
+            <span class="meta-tag">Kotlin 2.2</span>
+            <span class="meta-tag">Jetpack Compose M3</span>
+            <span class="meta-tag">Stripe PCI-DSS Level 1</span>
+            <span class="meta-tag">AES-256-GCM</span>
+            <span class="meta-tag">TLS 1.3 Strict</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: 4-Piece Content Image Visual Users Guide -->
+      <section id="visual-guide" class="doc-section">
+        <div class="section-header">
+          <span class="step-num">01</span>
+          <div>
+            <h2>4-Piece Visual Guide & User Manual</h2>
+            <p>Comprehensive walkthroughs of dashboard telemetry, Stripe checkout, security architecture, and developer deployment.</p>
+          </div>
+        </div>
+
+        <div class="guide-grid">
+          <!-- Guide Piece 1 -->
+          <article class="guide-card">
+            <div class="guide-img-wrap">
+              <img src="assets/img_dashboard_guide.jpg" alt="Dashboard Guide" loading="lazy">
+              <span class="guide-badge">PIECE 1 OF 4</span>
+            </div>
+            <div class="guide-content">
+              <h3>1. Dashboard Telemetry & Quotas</h3>
+              <p>The operational cockpit for monitoring customer subscription health and quota burn rates:</p>
+              <ul class="feature-list">
+                <li><strong>Active Subscription Status:</strong> Instant verification of active plan tier, billing renewal cycle, and Stripe customer token.</li>
+                <li><strong>Quota Consumption Meters:</strong> Real-time progress trackers measuring monthly API requests (e.g. 42.8k / 150k) and assigned team seats.</li>
+                <li><strong>Invoicing History:</strong> Itemized list of previous transactions with downloadable official Stripe receipts.</li>
+                <li><strong>Webhook Verification Badge:</strong> Real-time status indicator showing HMAC-SHA256 authenticated webhook delivery.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Guide Piece 2 -->
+          <article class="guide-card">
+            <div class="guide-img-wrap">
+              <img src="assets/img_stripe_billing.jpg" alt="Stripe Billing Guide" loading="lazy">
+              <span class="guide-badge">PIECE 2 OF 4</span>
+            </div>
+            <div class="guide-content">
+              <h3>2. Stripe Subscription & Checkout</h3>
+              <p>Frictionless, PCI-compliant card tokenization and tier switching flow:</p>
+              <ul class="feature-list">
+                <li><strong>Billing Cycle Toggle:</strong> Switch between Monthly and Annual billing schedules with automated 20% savings.</li>
+                <li><strong>Stripe Elements Payment Sheet:</strong> Native credit card entry with real-time Luhn algorithm validation and automatic brand recognition (Visa, MC, Amex).</li>
+                <li><strong>1-Tap Demo Card Filler:</strong> Populates certified sandbox test credentials (4242 4242 4242 4242) for immediate verification.</li>
+                <li><strong>Strong Customer Authentication (SCA):</strong> Seamless 3D Secure 2 (3DS) challenge handling compliant with EU PSD2 regulations.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Guide Piece 3 -->
+          <article class="guide-card">
+            <div class="guide-img-wrap">
+              <img src="assets/img_security_privacy.jpg" alt="Security & Privacy Architecture" loading="lazy">
+              <span class="guide-badge">PIECE 3 OF 4</span>
+            </div>
+            <div class="guide-content">
+              <h3>3. Cryptographic Standards & Privacy</h3>
+              <p>Defense-in-depth architectural protection safeguarding sensitive user and payment data:</p>
+              <ul class="feature-list">
+                <li><strong>AES-256-GCM at Rest:</strong> Galois/Counter Mode authenticated encryption with 96-bit unique IVs and 128-bit authentication tags.</li>
+                <li><strong>TLS 1.3 in Transit:</strong> Ephemeral Diffie-Hellman key exchanges (ECDHE) with public key certificate pinning against MITM attacks.</li>
+                <li><strong>Android Keystore HSM:</strong> Hardware-isolated StrongBox Keymaster protecting asymmetric private keys from memory dumps.</li>
+                <li><strong>Zero-Knowledge Tokenization:</strong> PANs are tokenized directly in Stripe vaults without entering application RAM.</li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Guide Piece 4 -->
+          <article class="guide-card">
+            <div class="guide-img-wrap">
+              <img src="assets/img_setup_guide.jpg" alt="Setup & Instructions Guide" loading="lazy">
+              <span class="guide-badge">PIECE 4 OF 4</span>
+            </div>
+            <div class="guide-content">
+              <h3>4. Developer Setup & Architecture</h3>
+              <p>Complete guide to environment provisioning, build execution, and documentation hosting:</p>
+              <ul class="feature-list">
+                <li><strong>Environment Secrets:</strong> Secrets Gradle Plugin reading STRIPE_PUBLISHABLE_KEY from /.env into BuildConfig.</li>
+                <li><strong>Deterministic Gradle Build:</strong> Modern Kotlin DSL setup targeting Android SDK 36.</li>
+                <li><strong>Host JVM Test Suite:</strong> Local Robolectric and unit tests verifying payment calculations and GDPR exports.</li>
+                <li><strong>GitHub Pages CI/CD:</strong> Automated GitHub Actions workflow serving docs directly from /docs.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Section 3: Stripe Integration -->
+      <section id="stripe-billing" class="doc-section">
+        <div class="section-header">
+          <span class="step-num">02</span>
+          <div>
+            <h2>Stripe Integration Architecture</h2>
+            <p>Seamless subscription billing, PaymentIntent lifecycles, and webhook signature verification.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Subscription Lifecycle State Machine</h3>
+          <p>BillingHub manages customer subscriptions through the full Stripe lifecycle:</p>
+          <div class="code-block">
+            <pre><code>[Customer Selects Plan] ──► [Stripe Elements Client Tokenization]
+                                      │
+                                      ▼
+                        [Create PaymentIntent / SetupIntent]
+                                      │
+                         ┌────────────┴────────────┐
+                         ▼                         ▼
+                  [3DS Challenge]          [Direct Confirmation]
+                         │                         │
+                         └────────────┬────────────┘
+                                      ▼
+                      [Stripe Webhook Event Dispatched]
+                                      │
+             ┌────────────────────────┼────────────────────────┐
+             ▼                        ▼                        ▼
+  [invoice.payment_succeeded]  [customer.subscription.updated]  [payment_failed]
+             │                        │                        │
+     Provision Tier Quota        Confirm Active State       Initiate Grace Period</code></pre>
+          </div>
+        </div>
+
+        <div id="test-cards" class="card mt-4">
+          <h3>Stripe Sandbox Testing Credentials</h3>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Card Brand</th>
+                  <th>Card Number</th>
+                  <th>Expiration</th>
+                  <th>CVC</th>
+                  <th>Verification Behavior</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Visa</strong></td>
+                  <td><code>4242 4242 4242 4242</code></td>
+                  <td>Future date</td>
+                  <td><code>123</code></td>
+                  <td><span class="badge-success">Immediate Success</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Mastercard</strong></td>
+                  <td><code>5555 5555 5555 4444</code></td>
+                  <td>Future date</td>
+                  <td><code>123</code></td>
+                  <td><span class="badge-success">Immediate Success</span></td>
+                </tr>
+                <tr>
+                  <td><strong>3D Secure (SCA)</strong></td>
+                  <td><code>4000 0027 6000 3184</code></td>
+                  <td>Future date</td>
+                  <td><code>123</code></td>
+                  <td><span class="badge-info">Triggers 3DS Challenge</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Declined Card</strong></td>
+                  <td><code>4000 0000 0000 0002</code></td>
+                  <td>Future date</td>
+                  <td><code>123</code></td>
+                  <td><span class="badge-error">Card Declined Error</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Security & Privacy -->
+      <section id="security-privacy" class="doc-section">
+        <div class="section-header">
+          <span class="step-num">03</span>
+          <div>
+            <h2>Security & Data Privacy Standards</h2>
+            <p>Cryptographic guarantees, key protection, and GDPR / CCPA user rights enforcement.</p>
+          </div>
+        </div>
+
+        <div class="spec-grid">
+          <div class="spec-card">
+            <h4>Data at Rest: AES-256-GCM</h4>
+            <p>
+              Local data persistence uses NIST-standard AES-256-GCM. Every record is encrypted with a unique 96-bit initialization vector (IV) generated by <code>SecureRandom</code> and protected by a 128-bit authentication tag, detecting any unauthorized bit flipping.
+            </p>
+          </div>
+
+          <div class="spec-card">
+            <h4>Data in Transit: TLS 1.3 Strict</h4>
+            <p>
+              All remote requests enforce TLS 1.3 with Perfect Forward Secrecy. Ciphers are constrained to <code>TLS_AES_256_GCM_SHA384</code> and <code>TLS_CHACHA20_POLY1305_SHA256</code>. Certificate pinning eliminates risk from compromised public Certificate Authorities.
+            </p>
+          </div>
+
+          <div class="spec-card">
+            <h4>Hardware Security: Android StrongBox</h4>
+            <p>
+              Keys are generated within the tamper-resistant hardware security module (HSM) on supported Android devices. Private keys cannot be extracted via physical probing, debugging, or system rooting.
+            </p>
+          </div>
+
+          <div class="spec-card">
+            <h4>User Privacy: GDPR & CCPA</h4>
+            <p>
+              Zero-knowledge customer records, Article 20 JSON data portability export, Article 17 Right to Erasure with automated purge pipeline, and CCPA Do-Not-Sell opt-out switches built natively into the UI.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Setup & Instructions -->
+      <section id="setup-guide" class="doc-section">
+        <div class="section-header">
+          <span class="step-num">04</span>
+          <div>
+            <h2>Setup & Build Instructions</h2>
+            <p>Step-by-step developer guide to compile, test, and host BillingHub.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Quick Terminal Setup</h3>
+          <div class="code-block">
+            <pre><code># 1. Clone repository
+git clone https://github.com/organization/billinghub.git
+cd billinghub
+
+# 2. Configure .env secrets
+cp .env.example .env
+
+# 3. Add your Stripe Publishable Key
+echo "STRIPE_PUBLISHABLE_KEY=pk_test_..." >> .env
+
+# 4. Run automated test suite
+gradle :app:testDebugUnitTest
+
+# 5. Build debug APK
+gradle :app:assembleDebug</code></pre>
+          </div>
+        </div>
+
+        <div id="github-pages" class="card mt-4">
+          <h3>GitHub Pages Hosting Configuration</h3>
+          <p>This project documentation is hosted on GitHub Pages via two easy options:</p>
+          <ol class="step-list">
+            <li><strong>Branch Deployment:</strong> In GitHub repo settings &gt; Pages, set source to <code>main</code> branch and folder to <code>/docs</code>.</li>
+            <li><strong>Automated CI/CD Workflow:</strong> The included <code>.github/workflows/deploy-docs.yml</code> automatically deploys documentation updates upon merge into main.</li>
+          </ol>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <p>&copy; 2026 BillingHub Inc. All rights reserved. Built with Kotlin, Jetpack Compose, and Stripe.</p>
+      <p class="footer-sub">PCI-DSS Level 1 Compliant • FIPS 140-2 Cryptographic Standards • GDPR / CCPA Certified</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
