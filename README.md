@@ -218,6 +218,33 @@ The repository includes `.github/workflows/deploy-docs.yml` which automatically 
 
 ---
 
+## Google Play Data Safety: How BillingHub Collects & Uses Data
+
+In compliance with Google Play Developer Program policies, below is the comprehensive disclosure of user data handling:
+
+| Data Category | Specific Data Types | Collection & Sharing Status | Primary Purpose of Processing | Security & Retention Standard |
+|---|---|---|---|---|
+| **Financial Info** | Purchase history, subscription tier, invoice logs, tokenized card summary (last 4 digits only). | **Collected & Shared with Stripe** for payment authorization. | App functionality, recurring subscription provisioning, invoice generation, fraud mitigation. | **Never collects raw PAN or CVC**. Encrypted at rest (AES-256-GCM) and in transit (TLS 1.3). Retained until account erasure. |
+| **Personal Info** | Email address (`westerveldjp@gmail.com`), cardholder billing name. | **Collected, Never Sold**. | Account identity, billing receipts, security audit alerts, and customer service. | Encrypted via Android Keystore HSM. Purged upon GDPR Article 17 hard-delete request. |
+| **App Performance & Telemetry** | Crash logs, diagnostic traces, API quota meter tallies. | **Pseudonymized Only**. | Performance analytics, resource quota enforcement, bug fixing. | Zero-knowledge hashed identifiers. Automatically rotated and purged every 30 days. |
+| **Device Identifiers** | Hardware-backed key alias, ephemeral truncated IP address (/24). | **Ephemeral / Transient**. | Replay attack prevention, DDoS mitigation, and signature verification. | IP addresses truncated within 24 hours. Keys locked inside tamper-resistant StrongBox HSM. |
+
+### Data Deletion & Privacy Controls
+- **User-Initiated Hard Purge**: Users can request complete deletion of their account, Stripe customer records, and cached tokens directly within the app via **Security & Privacy** > **Right to Erasure**.
+- **Data Portability**: Users can download an unencrypted, machine-readable JSON archive of all personal and billing metadata via **Export Data (JSON)**.
+- **CCPA Opt-Out**: Dedicated switch to immediately opt out of third-party telemetry sharing.
+
+---
+
+## Developer Support & Assistance
+
+Need technical assistance with the Stripe integration, webhooks, or encryption configuration? Contact our developer support team directly:
+
+- **Email**: [support@billinghub.io](mailto:support@billinghub.io?subject=BillingHub%20Developer%20Assistance%20Request&body=%2D%2D%2D%20Developer%20Assistance%20Request%20%2D%2D%2D%0AApp%3A%20BillingHub%20Android%20(v2.0%2C%20build%202)%0ATarget%20SDK%3A%2036%20(Android%2014%2B)%0AStripe%20Integration%20Mode%3A%20Sandbox%20%2F%20Test%0AUser%20Email%3A%20westerveldjp%40gmail.com%0A%0A%2D%2D%2D%20Issue%20Details%20%2D%2D%2D%0ACategory%3A%20%5BIntegration%20%2F%20Webhooks%20%2F%20Security%20%2F%20Billing%5D%0ADescription%3A%20%5BPlease%20describe%20your%20issue%20or%20question%20here%5D%0A%0A%2D%2D%2D%20Diagnostic%20Information%20%2D%2D%2D%0ADevice%20%2F%20Emulator%20Model%3A%20%0AOS%20Version%3A%20%0ALog%20%2F%20Error%20Trace%3A%20)
+- **Pre-formatted Template**: Includes Application version (v2.0), target Android SDK (36), Stripe sandbox configuration, and diagnostic trace placeholders.
+
+---
+
 ## License & Compliance Notice
 
 This software is distributed under the Apache License 2.0. Stripe is a registered trademark of Stripe, Inc.

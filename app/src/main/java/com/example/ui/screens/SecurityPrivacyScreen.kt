@@ -1,5 +1,9 @@
 package com.example.ui.screens
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -302,6 +306,56 @@ fun SecurityPrivacyScreen(
       }
     }
 
+    // SECTION 2B: Google Play Data Safety Breakdown
+    item {
+      Text(
+        text = "Google Play Data Safety Disclosures",
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.onBackground
+      )
+    }
+
+    item {
+      ElevatedCard(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
+      ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+          Text(
+            text = "Data Collected & Processing Purposes",
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold
+          )
+          Spacer(modifier = Modifier.height(8.dp))
+
+          DataSafetyRow(
+            category = "Financial Information",
+            types = "Purchase history, subscription tier, invoice tokens, last 4 digits of card.",
+            purpose = "App functionality, recurring billing, fraud prevention.",
+            protection = "Shared only with Stripe PCI-DSS Level 1 vault. Raw PAN/CVC never collected."
+          )
+          Divider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
+
+          DataSafetyRow(
+            category = "Personal Information",
+            types = "Account email, cardholder name.",
+            purpose = "Authentication, billing communication, receipt dispatch.",
+            protection = "Encrypted in Android Keystore HSM. Never sold to third parties."
+          )
+          Divider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
+
+          DataSafetyRow(
+            category = "App Telemetry & Logs",
+            types = "Crash traces, API request counters, webhook event statuses.",
+            purpose = "Performance optimization, quota enforcement, security auditing.",
+            protection = "Pseudonymized SHA-256 hashes. Automated 30-day rolling purges."
+          )
+        }
+      }
+    }
+
     // SECTION 3: GDPR Rights Actions
     item {
       Text(
@@ -419,6 +473,75 @@ fun SecurityPrivacyScreen(
             fontSize = 10.sp,
             color = CyanAccent.copy(alpha = 0.8f)
           )
+        }
+      }
+    }
+
+    // SECTION 5: Contact Developer Support Footer
+    item {
+      Spacer(modifier = Modifier.height(8.dp))
+      val context = LocalContext.current
+      ElevatedCard(
+        modifier = Modifier
+          .fillMaxWidth()
+          .testTag("contact_support_card"),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
+      ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+          Text(
+            text = "Developer Assistance & Inquiry",
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold
+          )
+          Spacer(modifier = Modifier.height(4.dp))
+          Text(
+            text = "Need integration help or have questions regarding our Stripe sandbox or cryptographic implementation?",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          )
+          Spacer(modifier = Modifier.height(12.dp))
+          Button(
+            onClick = {
+              val emailSubject = "BillingHub Developer Assistance Request"
+              val emailBody = """
+--- Developer Assistance Request ---
+App: BillingHub Android (v2.0, build 2)
+Target SDK: 36 (Android 14+)
+Stripe Integration Mode: Sandbox / Test
+User Email: westerveldjp@gmail.com
+
+--- Issue Details ---
+Category: [Integration / Webhooks / Security / Billing]
+Description: [Please describe your issue or question here]
+
+--- Diagnostic Information ---
+Device / Emulator Model: 
+OS Version: 
+Log / Error Trace: 
+              """.trimIndent()
+
+              val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:support@billinghub.io")
+                putExtra(Intent.EXTRA_SUBJECT, emailSubject)
+                putExtra(Intent.EXTRA_TEXT, emailBody)
+              }
+              try {
+                context.startActivity(emailIntent)
+              } catch (e: Exception) {
+                // Handle case where no email app is available
+              }
+            },
+            modifier = Modifier
+              .fillMaxWidth()
+              .testTag("contact_support_button"),
+            colors = ButtonDefaults.buttonColors(containerColor = IndigoPrimary),
+            shape = RoundedCornerShape(12.dp)
+          ) {
+            Icon(Icons.Default.Email, contentDescription = null, modifier = Modifier.size(18.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Contact Developer Support", fontWeight = FontWeight.Bold)
+          }
         }
       }
     }
@@ -545,3 +668,36 @@ private fun EncryptionStandardCard(
     }
   }
 }
+
+@Composable
+private fun DataSafetyRow(
+  category: String,
+  types: String,
+  purpose: String,
+  protection: String,
+) {
+  Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+    Text(
+      text = category,
+      style = MaterialTheme.typography.bodyMedium,
+      fontWeight = FontWeight.Bold,
+      color = CyanAccent
+    )
+    Text(
+      text = "Types: $types",
+      style = MaterialTheme.typography.bodySmall,
+      color = MaterialTheme.colorScheme.onSurface
+    )
+    Text(
+      text = "Purpose: $purpose",
+      style = MaterialTheme.typography.bodySmall,
+      color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
+    Text(
+      text = "Security: $protection",
+      style = MaterialTheme.typography.bodySmall,
+      color = SuccessGreen
+    )
+  }
+}
+

@@ -294,6 +294,55 @@
             </p>
           </div>
         </div>
+
+        <!-- Google Play Data Safety & Collection Details -->
+        <div id="data-safety" class="card mt-4">
+          <h3>Google Play Data Safety & Data Collection Architecture</h3>
+          <p>Transparency declaration regarding what data BillingHub collects, how it is used, and how it is protected:</p>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Data Category</th>
+                  <th>Specific Data Types</th>
+                  <th>Collected / Shared</th>
+                  <th>Purpose of Processing</th>
+                  <th>Security & Retention</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Financial Info</strong></td>
+                  <td>Purchase history, subscription tier, invoice records, tokenized payment method (last 4 digits only).</td>
+                  <td><span class="badge-info">Collected & Shared with Stripe</span></td>
+                  <td>App functionality, subscription lifecycle management, payment receipt delivery, and fraud prevention.</td>
+                  <td>Raw PAN/CVC never collected. Encrypted in transit (TLS 1.3) and at rest (AES-256-GCM). Retained until account deletion.</td>
+                </tr>
+                <tr>
+                  <td><strong>Personal Info</strong></td>
+                  <td>User email address (e.g. <code>westerveldjp@gmail.com</code>), cardholder billing name.</td>
+                  <td><span class="badge-info">Collected, Never Sold</span></td>
+                  <td>Account authentication, billing notifications, transaction receipts, and customer service.</td>
+                  <td>Encrypted with hardware-backed Android Keystore. Deleted upon Article 17 Right to Erasure request.</td>
+                </tr>
+                <tr>
+                  <td><strong>App Info & Performance</strong></td>
+                  <td>Crash logs, diagnostic traces, API quota meter tallies.</td>
+                  <td><span class="badge-success">Pseudonymized Only</span></td>
+                  <td>Analytics, quota enforcement, performance optimization, and bug fixing.</td>
+                  <td>Zero-knowledge hashed identifiers. Automatically purged every 30 days via rolling retention policy.</td>
+                </tr>
+                <tr>
+                  <td><strong>Device Identifiers</strong></td>
+                  <td>Hardware-backed key alias, truncated IP address (/24 subnet).</td>
+                  <td><span class="badge-success">Transient / Ephemeral</span></td>
+                  <td>Cryptographic signature verification, DDoS mitigation, and replay prevention.</td>
+                  <td>IP addresses truncated after 24 hours. Hardware keys locked in tamper-resistant StrongBox HSM.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <!-- Section 5: Setup & Instructions -->
@@ -341,6 +390,14 @@ gradle :app:assembleDebug</code></pre>
 
   <footer class="footer">
     <div class="footer-container">
+      <div class="footer-actions" style="margin-bottom: 20px;">
+        <a href="mailto:support@billinghub.io?subject=BillingHub%20Developer%20Assistance%20Request&body=%2D%2D%2D%20Developer%20Assistance%20Request%20%2D%2D%2D%0AApp%3A%20BillingHub%20Android%20(v2.0%2C%20build%202)%0ATarget%20SDK%3A%2036%20(Android%2014%2B)%0AStripe%20Integration%20Mode%3A%20Sandbox%20%2F%20Test%0AUser%20Email%3A%20westerveldjp%40gmail.com%0A%0A%2D%2D%2D%20Issue%20Details%20%2D%2D%2D%0ACategory%3A%20%5BIntegration%20%2F%20Webhooks%20%2F%20Security%20%2F%20Billing%5D%0ADescription%3A%20%5BPlease%20describe%20your%20issue%20or%20question%20here%5D%0A%0A%2D%2D%2D%20Diagnostic%20Information%20%2D%2D%2D%0ADevice%20%2F%20Emulator%20Model%3A%20%0AOS%20Version%3A%20%0ALog%20%2F%20Error%20Trace%3A%20" 
+           class="btn-contact-support" 
+           style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #6366f1, #06b6d4); color: white; padding: 12px 24px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 0.95rem; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Contact Developer Support
+        </a>
+      </div>
       <p>&copy; 2026 BillingHub Inc. All rights reserved. Built with Kotlin, Jetpack Compose, and Stripe.</p>
       <p class="footer-sub">PCI-DSS Level 1 Compliant • FIPS 140-2 Cryptographic Standards • GDPR / CCPA Certified</p>
     </div>

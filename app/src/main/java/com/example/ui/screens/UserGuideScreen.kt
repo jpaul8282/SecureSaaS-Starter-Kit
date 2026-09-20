@@ -1,5 +1,11 @@
 package com.example.ui.screens
 
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -183,6 +189,69 @@ fun UserGuideScreen() {
 
           item {
             SetupCodeSnippetCard()
+          }
+
+          item {
+            val context = LocalContext.current
+            ElevatedCard(
+              modifier = Modifier.fillMaxWidth(),
+              shape = RoundedCornerShape(16.dp),
+              colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+              Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                  text = "Need Developer Assistance?",
+                  style = MaterialTheme.typography.titleSmall,
+                  fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                  text = "Having trouble configuring Stripe keys or webhook signatures? Send a pre-formatted diagnostics report to developer support.",
+                  style = MaterialTheme.typography.bodySmall,
+                  color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                  onClick = {
+                    val emailSubject = "BillingHub Developer Assistance Request"
+                    val emailBody = """
+--- Developer Assistance Request ---
+App: BillingHub Android (v2.0, build 2)
+Target SDK: 36 (Android 14+)
+Stripe Integration Mode: Sandbox / Test
+User Email: westerveldjp@gmail.com
+
+--- Issue Details ---
+Category: [Integration / Webhooks / Security / Billing]
+Description: [Please describe your issue or question here]
+
+--- Diagnostic Information ---
+Device / Emulator Model: 
+OS Version: 
+Log / Error Trace: 
+                    """.trimIndent()
+
+                    val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                      data = Uri.parse("mailto:support@billinghub.io")
+                      putExtra(Intent.EXTRA_SUBJECT, emailSubject)
+                      putExtra(Intent.EXTRA_TEXT, emailBody)
+                    }
+                    try {
+                      context.startActivity(emailIntent)
+                    } catch (e: Exception) {
+                      // Handled
+                    }
+                  },
+                  modifier = Modifier.fillMaxWidth(),
+                  colors = ButtonDefaults.buttonColors(containerColor = IndigoPrimary),
+                  shape = RoundedCornerShape(12.dp)
+                ) {
+                  Icon(Icons.Default.Email, contentDescription = null, modifier = Modifier.size(18.dp))
+                  Spacer(modifier = Modifier.width(8.dp))
+                  Text("Contact Support", fontWeight = FontWeight.Bold)
+                }
+              }
+            }
           }
         }
       }
