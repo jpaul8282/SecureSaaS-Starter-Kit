@@ -202,6 +202,74 @@ The resulting APK will be generated at:
 
 ---
 
+## Frequently Asked Questions (FAQ)
+
+### Stripe Integration Queries
+
+#### 1. How do I switch BillingHub from Stripe Sandbox test mode to Live mode?
+To switch from test mode to live production processing:
+1. **Update Publishable Key**: Replace your `pk_test_...` key in `.env` (or via the AI Studio Secrets panel) with your verified Stripe live publishable key (`pk_live_...`). The Secrets Gradle Plugin automatically compiles this into `BuildConfig.STRIPE_PUBLISHABLE_KEY`.
+2. **Configure Live Webhook Secret**: Update `STRIPE_WEBHOOK_SECRET` in `.env` to your production endpoint secret (`whsec_...`) from the Stripe Developer Dashboard under *Developers > Webhooks*.
+3. **Map Production Price IDs**: Ensure the plan recurring price identifiers configured in your subscription model match live Price objects created in the Stripe Product Catalog.
+
+> **Security Mandate**: Never store or commit your Stripe Restricted Secret Key (`rk_live_...` or `sk_live_...`) in the mobile client. The Android application only receives the client-safe Publishable Key.
+
+#### 2. How are Stripe webhook signatures verified and replay attacks prevented?
+Inbound event payloads are cryptographically validated using HMAC-SHA256:
+- The receiver extracts timestamp (`t`) and signature (`v1`) from the `Stripe-Signature` HTTP header.
+- Computes HMAC-SHA256 over `timestamp + "." + rawBody` using `STRIPE_WEBHOOK_SECRET`.
+- Performs constant-time comparison (`MessageDigest.isEqual`) to protect against timing side-channel attacks.
+- Enforces a 300-second tolerance threshold; payloads with timestamps older than 5 minutes are discarded to eliminate replay attacks.
+
+#### 3. How does Strong Customer Authentication (SCA) & 3D Secure 2.0 work on Android?
+For transactions subject to European PSD2 regulation or issuing bank step-up challenges:
+- When a `PaymentIntent` returns `status: "requires_action"` with `use_stripe_sdk`, the Stripe Android SDK presents the bank's 3DS challenge authentication dialog without leaving the app.
+- Sandbox test card `4000 0027 6000 3184` is pre-configured in BillingHub to simulate and test this exact challenge flow.
+- Upon successful SMS/biometric verification, the `PaymentIntent` transitions to `succeeded` and subscription quotas are immediately provisioned.
+
+#### 4. How does BillingHub handle failed subscription renewals and grace periods?
+- When a subscription renewal charge fails, Stripe dispatches the `invoice.payment_failed` webhook event.
+- BillingHub marks the subscription state as `past_due`, initiating an in-app grace period alert informing the customer to update their card.
+- Stripe's Smart Retries engine retries the charge up to 4 times across optimal intervals. If uncollectible, `customer.subscription.deleted` triggers an automated downgrade to the Starter tier.
+
+#### 5. Are credit card numbers (PAN / CVC) ever stored or processed on the Android device?
+**No.** BillingHub employs a zero-knowledge tokenization architecture:
+- Cardholder PAN, CVV, and expiration dates are collected in isolated Stripe UI Elements and transmitted directly to Stripe's PCI-DSS Level 1 tokenization vault over TLS 1.3.
+- Neither raw card numbers nor CVVs are ever accessible in application memory, written to SQLite databases, or logged to disk.
+- The app receives and persists only a non-sensitive PaymentMethod token (`pm_*`), card brand, and masked last 4 digits (e.g. `•••• 4242`), confining PCI compliance scope to SAQ A-EP.
+
+---
+
+### Security & Privacy Configuration Queries
+
+#### 1. How does AES-256-GCM protect cached data and tokens at rest?
+- **Authenticated Encryption (AEAD)**: Every encrypted payload includes a 128-bit authentication tag. Any tampering or unauthorized modification immediately halts decryption.
+- **Unique Nonce Generation**: Every record write produces a cryptographically secure 96-bit Initialization Vector (IV) via `SecureRandom`. IV reuse is mathematically precluded.
+- **Envelope Encryption**: Symmetric encryption keys for database records are themselves encrypted and protected by master keys in the Android Keystore.
+
+#### 2. What is the Android Keystore StrongBox HSM architecture?
+On supported Android 9.0+ hardware:
+- Private keys reside inside dedicated, hardware-isolated StrongBox Keymaster modules featuring independent CPUs, secure RAM, and true hardware random number generators (TRNG).
+- Rooting, physical probing, and memory dump attacks cannot extract private key material outside the hardware enclave.
+- Keys generate verifiable X.509 cryptographic attestation certificate chains signed by Google and device OEMs.
+
+#### 3. How does BillingHub enforce TLS 1.3 strict transit security and certificate pinning?
+- `network-security-config.xml` strictly enforces `cleartextTrafficPermitted="false"`.
+- OkHttp network layers are pinned to TLS 1.3 with Perfect Forward Secrecy cipher suites (`TLS_AES_256_GCM_SHA384`, `TLS_CHACHA20_POLY1305_SHA256`).
+- Public key SHA-256 certificate pinning is enforced on all API connections to `api.stripe.com`, mitigating rogue CA compromises and MITM proxies.
+
+#### 4. How do GDPR Article 17 (Right to Erasure) and Article 20 (Data Portability) work?
+- **Data Portability (Art. 20)**: Users can tap **Export Data (JSON)** on the Security screen to download an unencrypted, machine-readable JSON archive containing all user profile attributes, quota metrics, and billing records.
+- **Right to Erasure (Art. 17)**: Tapping **Request Account & Data Deletion** triggers an irreversible pipeline that cancels active Stripe subscriptions, purges local database tables, and flushes hardware Keystore keys.
+- **CCPA Opt-Out**: A dedicated native toggle allows users to opt out of third-party telemetry and diagnostic crash reporting.
+
+#### 5. Why is .env and the Secrets Gradle Plugin used instead of local.properties?
+- Secrets are isolated in `.env` (tracked in `.gitignore`), preventing inadvertent credential commits to Git history.
+- The Secrets Gradle Plugin securely compiles properties into typed `BuildConfig` constants.
+- The configuration integrates seamlessly with the AI Studio Secrets panel and headless CI/CD build environments.
+
+---
+
 ## Hosting Documentation on GitHub Pages
 
 The `/docs` directory is configured as a standalone, responsive static web portal that can be hosted on GitHub Pages with zero external dependencies.

@@ -26,6 +26,7 @@
         <a href="#stripe-billing" class="nav-link">Stripe Integration</a>
         <a href="#security-privacy" class="nav-link">Security & Privacy</a>
         <a href="#setup-guide" class="nav-link">Setup</a>
+        <a href="#faq" class="nav-link">FAQ</a>
         <button id="theme-toggle" class="btn-icon" aria-label="Toggle Theme">
           <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         </button>
@@ -59,8 +60,8 @@
         <div class="nav-group">
           <span class="group-title">DEVELOPER GUIDE</span>
           <a href="#setup-guide">Installation & Build</a>
-          <a href="#environment-vars">.env Configuration</a>
           <a href="#github-pages">GitHub Pages Hosting</a>
+          <a href="#faq">Frequently Asked Questions</a>
         </div>
       </nav>
     </aside>
@@ -383,6 +384,241 @@ gradle :app:assembleDebug</code></pre>
             <li><strong>Branch Deployment:</strong> In GitHub repo settings &gt; Pages, set source to <code>main</code> branch and folder to <code>/docs</code>.</li>
             <li><strong>Automated CI/CD Workflow:</strong> The included <code>.github/workflows/deploy-docs.yml</code> automatically deploys documentation updates upon merge into main.</li>
           </ol>
+        </div>
+      </section>
+
+      <!-- Section 5: Frequently Asked Questions -->
+      <section id="faq" class="doc-section">
+        <div class="section-header">
+          <span class="step-num">05</span>
+          <div>
+            <h2>Frequently Asked Questions</h2>
+            <p>Comprehensive troubleshooting and solutions for common Stripe integration and security configuration queries.</p>
+          </div>
+        </div>
+
+        <!-- Stripe Integration FAQs -->
+        <div class="faq-category">
+          <div class="faq-category-header">
+            <span class="faq-category-badge badge-stripe">STRIPE INTEGRATION</span>
+            <h3 class="faq-category-title">Payment & Billing Queries</h3>
+          </div>
+
+          <div class="faq-list">
+            <details class="faq-item" open>
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                  </span>
+                  <span>How do I switch BillingHub from Stripe Sandbox test mode to Live production mode?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p>To transition from test mode to live production processing, execute these three configuration updates:</p>
+                <ul>
+                  <li><strong>Update Publishable Key:</strong> Replace your <code>pk_test_...</code> key in <code>.env</code> (and the AI Studio Secrets panel) with your verified Stripe live key <code>pk_live_...</code>. The Secrets Gradle Plugin automatically injects this into <code>BuildConfig.STRIPE_PUBLISHABLE_KEY</code> during compilation.</li>
+                  <li><strong>Configure Production Webhook Secret:</strong> Update <code>STRIPE_WEBHOOK_SECRET</code> with your live endpoint secret (starting with <code>whsec_...</code>) created in the Stripe Developer Dashboard under <em>Webhooks > Add endpoint</em>.</li>
+                  <li><strong>Map Production Price IDs:</strong> Ensure the recurring Price IDs configured in your subscription model match the live Price objects generated in your Stripe Product Catalog.</li>
+                </ul>
+                <div class="faq-callout">
+                  <strong>Security Rule:</strong> Never store or commit your Stripe Restricted Secret Key (<code>rk_live_...</code> or <code>sk_live_...</code>) on the Android mobile client. The Android app only ever receives the client-safe Publishable Key.
+                </div>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                  </span>
+                  <span>How are Stripe webhook signatures verified and replay attacks prevented?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p>BillingHub validates every inbound webhook notification using RFC 2104 compliant HMAC-SHA256 signatures:</p>
+                <ul>
+                  <li><strong>Header Extraction:</strong> The receiver parses the <code>Stripe-Signature</code> header into timestamp (<code>t=...</code>) and signature scheme (<code>v1=...</code>).</li>
+                  <li><strong>Signature Computation:</strong> It builds the signed payload string <code>timestamp + "." + rawBody</code> and computes the HMAC-SHA256 hash using the shared <code>STRIPE_WEBHOOK_SECRET</code>.</li>
+                  <li><strong>Timing-Attack Safe Comparison:</strong> Signatures are compared using constant-time equality checks (<code>MessageDigest.isEqual</code>) to prevent timing side-channel attacks.</li>
+                  <li><strong>Tolerance Window:</strong> Requests with a timestamp older than 300 seconds (5 minutes) are rejected to eliminate replay attacks.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </span>
+                  <span>How does Strong Customer Authentication (SCA) & 3D Secure 2.0 work on Android?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p>For European PSD2 / SCA compliance and high-risk transactions requiring biometric or SMS one-time password verification:</p>
+                <ul>
+                  <li>When a PaymentIntent enters the <code>requires_action</code> state with <code>use_stripe_sdk</code>, the Android SDK natively presents the issuing bank's 3D Secure challenge sheet.</li>
+                  <li>Sandbox test card <code>4000 0027 6000 3184</code> is pre-configured in BillingHub to simulate and test this exact challenge flow without real bank charges.</li>
+                  <li>Upon completion, the listener receives the confirmed PaymentIntent and moves the subscription state machine to active without disrupting the user flow.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </span>
+                  <span>How does BillingHub handle failed subscription renewals and dunning grace periods?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p>When an existing card fails renewal (e.g., card expired, insufficient funds):</p>
+                <ul>
+                  <li>Stripe fires the <code>invoice.payment_failed</code> webhook event. BillingHub updates the subscription status to <code>past_due</code>.</li>
+                  <li>A grace period banner appears in the dashboard inviting the user to update their payment method before service interruption.</li>
+                  <li>Stripe Smart Retries algorithm attempts collection up to 4 times based on machine learning models. If all retries fail, <code>customer.subscription.deleted</code> downgrades the account to the Starter tier.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                  </span>
+                  <span>Are raw credit card numbers (PAN / CVC) ever stored or processed on the device?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p><strong>Absolutely not.</strong> BillingHub employs zero-knowledge tokenization architecture:</p>
+                <ul>
+                  <li>Raw PAN, expiry, and CVC inputs are captured directly within isolated Stripe SDK UI fields and transmitted over TLS 1.3 straight to Stripe's certified PCI-DSS Level 1 tokenization vaults.</li>
+                  <li>Neither application RAM, Room database, nor device flash storage ever receives or retains raw card numbers.</li>
+                  <li>The app only stores the returned non-sensitive Stripe PaymentMethod token (<code>pm_xxx</code>), card brand, and masked last 4 digits (e.g. <code>•••• 4242</code>), keeping PCI compliance burden strictly at SAQ A-EP.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- Security & Privacy FAQs -->
+        <div class="faq-category mt-4">
+          <div class="faq-category-header">
+            <span class="faq-category-badge badge-security">SECURITY & PRIVACY</span>
+            <h3 class="faq-category-title">Cryptographic & Compliance Queries</h3>
+          </div>
+
+          <div class="faq-list">
+            <details class="faq-item" open>
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                  </span>
+                  <span>How does AES-256-GCM encryption protect cached data and tokens at rest?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p>Data at rest in BillingHub uses NIST-certified AES-256 in Galois/Counter Mode (GCM):</p>
+                <ul>
+                  <li><strong>Authenticated Encryption (AEAD):</strong> Every ciphertext chunk is coupled with a 128-bit authentication tag. Any unauthorized bit flips or offline modification immediately invalidate the tag and abort decryption.</li>
+                  <li><strong>Unique IVs per Record:</strong> Every encryption pass generates a fresh 96-bit Initialization Vector using <code>SecureRandom</code>. IV reuse is cryptographically prohibited.</li>
+                  <li><strong>Envelope Encryption:</strong> Symmetric database encryption keys are themselves encrypted and protected by the master key residing in the Android Keystore.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                  </span>
+                  <span>What is the Android Keystore StrongBox HSM architecture and why is it tamper-resistant?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p>On supported devices (Android 9.0+), BillingHub requests keys configured with <code>setIsStrongBoxBacked(true)</code>:</p>
+                <ul>
+                  <li><strong>Dedicated Hardware Isolation:</strong> StrongBox operates on a physically isolated microprocessor with dedicated CPU, secure memory, and true hardware random number generator (TRNG), completely separated from the main Android Application Processor.</li>
+                  <li><strong>Root & Memory-Dump Immune:</strong> Even if an attacker obtains kernel root access or performs memory dumping on the device, cryptographic private key material cannot be extracted outside the hardware boundary.</li>
+                  <li><strong>Cryptographic Attestation:</strong> Keys can prove hardware provenance via Keymaster X.509 certificate chains signed directly by Google and OEM root authorities.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  </span>
+                  <span>How does BillingHub enforce TLS 1.3 strict transit security and certificate pinning?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p>Network transit enforces zero cleartext and strict transport security:</p>
+                <ul>
+                  <li><strong>Network Security Config:</strong> <code>res/xml/network_security_config.xml</code> explicitly sets <code>cleartextTrafficPermitted="false"</code>.</li>
+                  <li><strong>TLS 1.3 Protocol & Ciphers:</strong> OkHttp is pinned strictly to TLS 1.3 with Perfect Forward Secrecy cipher suites (<code>TLS_AES_256_GCM_SHA384</code> and <code>TLS_CHACHA20_POLY1305_SHA256</code>), eliminating obsolete ciphers and renegotiation vulnerabilities.</li>
+                  <li><strong>Public Key Pinning:</strong> Public key SHA-256 certificate pins are validated on all connections to <code>api.stripe.com</code> and billing endpoints, thwarting rogue CA interception and man-in-the-middle (MITM) attacks.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                  </span>
+                  <span>How do the GDPR Article 17 (Right to Erasure) and Article 20 (Data Portability) pipelines work?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p>Privacy regulations are directly operationalized via interactive tools in the app:</p>
+                <ul>
+                  <li><strong>Article 20 Data Portability:</strong> Clicking <em>Export Data (JSON)</em> generates an unencrypted, standardized JSON archive including user profile, active subscription status, quota usage metrics, and payment transaction logs, downloadable to the user's device.</li>
+                  <li><strong>Article 17 Right to Erasure:</strong> Clicking <em>Request Account & Data Deletion</em> executes an irreversible purge pipeline: cancels recurring Stripe subscriptions, flushes Keystore keys, zeroes out database rows, and deletes cached local preferences.</li>
+                  <li><strong>CCPA Do-Not-Sell:</strong> A dedicated native switch immediately toggles off any external telemetry and diagnostic analytics sharing.</li>
+                </ul>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-summary">
+                <div class="faq-summary-content">
+                  <span class="faq-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                  </span>
+                  <span>Why is .env and Secrets Gradle Plugin used instead of local.properties or hardcoded values?</span>
+                </div>
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </summary>
+              <div class="faq-answer">
+                <p>Industry best practice and repository safety rules:</p>
+                <ul>
+                  <li><strong>Zero Secret Leakage:</strong> Secrets are maintained in <code>.env</code> which is strictly listed in <code>.gitignore</code>, guaranteeing credentials are never committed to public or private Git repositories.</li>
+                  <li><strong>Secrets Gradle Plugin:</strong> At build time, the plugin parses <code>.env</code> and compiles the values into typed fields in <code>BuildConfig</code> (e.g. <code>BuildConfig.STRIPE_PUBLISHABLE_KEY</code>).</li>
+                  <li><strong>Container & CI Compatibility:</strong> The AI Studio Secrets panel provides runtime environment variable injection without relying on local machine filesystem paths.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
         </div>
       </section>
     </main>
