@@ -611,6 +611,117 @@ body {
   font-size: 0.88rem;
 }
 
+/* Play Store Assets Showcase Grid */
+.playstore-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.playstore-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.playstore-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+}
+
+.playstore-thumb-wrap {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: var(--bg-surface-elevated);
+  overflow: hidden;
+}
+
+.playstore-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.playstore-card:hover .playstore-thumb-wrap img {
+  transform: scale(1.05);
+}
+
+.playstore-badge-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(10, 15, 29, 0.85);
+  color: var(--cyan-accent);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.playstore-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.playstore-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.playstore-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 14px;
+  flex: 1;
+}
+
+.playstore-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.btn-download-asset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.2));
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  padding: 10px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.88rem;
+  transition: all 0.2s;
+}
+
+.btn-download-asset:hover {
+  background: linear-gradient(135deg, var(--indigo-primary), var(--cyan-accent));
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+}
+
 /* Footer */
 .footer {
   border-top: 1px solid var(--border-color);

@@ -149,7 +149,18 @@ When developing in Stripe Sandbox test mode, use the following credentials:
 
 ## Setup & Installation Instructions
 
-### Prerequisites
+### One-Step Automated Verification (`test-setup.sh`)
+
+BillingHub provides an automated verification shell script in the root directory that validates your Java and Android SDK environment, initializes `.env`, compiles the debug APK, and runs the entire suite of Unit and Robolectric tests:
+
+```bash
+chmod +x test-setup.sh
+./test-setup.sh
+```
+
+---
+
+### Prerequisites (Manual Setup)
 
 - **Android Studio**: Ladybug (2024.2.1) or Meerkat
 - **JDK**: Java Development Kit 17 or higher
@@ -301,6 +312,39 @@ In compliance with Google Play Developer Program policies, below is the comprehe
 - **User-Initiated Hard Purge**: Users can request complete deletion of their account, Stripe customer records, and cached tokens directly within the app via **Security & Privacy** > **Right to Erasure**.
 - **Data Portability**: Users can download an unencrypted, machine-readable JSON archive of all personal and billing metadata via **Export Data (JSON)**.
 - **CCPA Opt-Out**: Dedicated switch to immediately opt out of third-party telemetry sharing.
+
+---
+
+## Google Play Store Asset Kit (10 Downloadable Content Images)
+
+BillingHub provides 10 certified, high-resolution graphics and screenshots in `docs/assets/` ready for Google Play Console submission:
+
+| # | Asset Filename | Specification | Play Console Category | Primary Purpose |
+|---|---|---|---|---|
+| **1** | `playstore_01_feature_graphic.jpg` | 1024 x 500 px (16:9) | **Feature Graphic** | Store listing hero banner highlighting SaaS billing cockpit & encryption |
+| **2** | `playstore_02_dashboard_mockup.jpg` | 1080 x 1920 px (9:16) | **Phone Screenshot 1** | Quota meters, API consumption counters, and active plan status |
+| **3** | `playstore_03_checkout_mockup.jpg` | 1080 x 1920 px (9:16) | **Phone Screenshot 2** | Stripe Elements payment sheet, annual 20% discount, 3DS challenge |
+| **4** | `playstore_04_security_mockup.jpg` | 1080 x 1920 px (9:16) | **Phone Screenshot 3** | Android StrongBox HSM attestation, AES-256-GCM, biometric lock |
+| **5** | `playstore_05_gdpr_mockup.jpg` | 1080 x 1920 px (9:16) | **Phone Screenshot 4** | GDPR Article 17 hard purge, Article 20 JSON data export, CCPA toggle |
+| **6** | `playstore_06_app_icon_512.jpg` | 512 x 512 px (1:1) | **App Icon (Hi-Res)** | Official 32-bit PNG launcher graphic with adaptive rounded geometry |
+| **7** | `playstore_07_dashboard_infographic.jpg` | 1080 x 810 px (4:3) | **Visual Guide 1** | Architectural breakdown of quota metering and invoice history |
+| **8** | `playstore_08_stripe_billing_infographic.jpg` | 1080 x 810 px (4:3) | **Visual Guide 2** | Stripe recurring billing state machine, PaymentIntent tokens, SCA modal |
+| **9** | `playstore_09_security_infographic.jpg` | 1080 x 810 px (4:3) | **Visual Guide 3** | Galois/Counter Mode cipher, TLS 1.3 Strict, and StrongBox Keymaster |
+| **10** | `playstore_10_developer_setup_infographic.jpg` | 1080 x 810 px (4:3) | **Visual Guide 4** | Deterministic Gradle builds, unit test automation, GitHub Pages CI |
+
+> **Direct Downloads**: All 10 high-resolution images can be viewed and downloaded directly with one tap from the hosted documentation portal (`docs/index.html#playstore-assets`).
+
+---
+
+## ProGuard & R8 Obfuscation & Shrinking Configuration
+
+The project includes production rules in `app/proguard-rules.pro`:
+
+- **Stack Trace De-obfuscation**: Preserves `SourceFile` and `LineNumberTable` for pinpoint debugging in Google Play Console crash reports.
+- **Moshi & Room Serialization**: Preserves `@JsonClass`, `@Entity`, and `@Dao` reflection constructors against R8 stripping.
+- **Stripe SDK & 3D Secure**: Keeps PaymentSheet models, PaymentIntent contracts, and 3DS2 challenge interfaces intact.
+- **Android Keystore & Biometrics**: Preserves JCA/JCE provider implementations and StrongBox Keymaster hardware callbacks.
+- **Kotlin & Coroutines**: Protects coroutine exception handlers and dispatcher factories.
 
 ---
 

@@ -27,6 +27,8 @@
         <a href="#security-privacy" class="nav-link">Security & Privacy</a>
         <a href="#setup-guide" class="nav-link">Setup</a>
         <a href="#faq" class="nav-link">FAQ</a>
+        <a href="#playstore-assets" class="nav-link">Play Store Kit (10)</a>
+        <a href="#proguard-rules" class="nav-link">ProGuard</a>
         <button id="theme-toggle" class="btn-icon" aria-label="Toggle Theme">
           <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         </button>
@@ -62,6 +64,11 @@
           <a href="#setup-guide">Installation & Build</a>
           <a href="#github-pages">GitHub Pages Hosting</a>
           <a href="#faq">Frequently Asked Questions</a>
+        </div>
+        <div class="nav-group">
+          <span class="group-title">PLAY STORE & RELEASES</span>
+          <a href="#playstore-assets">Play Store Assets (10)</a>
+          <a href="#proguard-rules">ProGuard & R8 Config</a>
         </div>
       </nav>
     </aside>
@@ -357,7 +364,16 @@
         </div>
 
         <div class="card">
-          <h3>Quick Terminal Setup</h3>
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 16px;">
+            <div>
+              <h3>Quick Terminal Setup</h3>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0;">Manual setup workflow or download the all-in-one automation script below.</p>
+            </div>
+            <a href="test-setup.sh" download="test-setup.sh" class="btn-download-asset" style="padding: 10px 18px; font-weight: 700; background: linear-gradient(135deg, var(--indigo-primary), var(--cyan-accent)); color: white; border-color: transparent; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download test-setup.sh Script
+            </a>
+          </div>
           <div class="code-block">
             <pre><code># 1. Clone repository
 git clone https://github.com/organization/billinghub.git
@@ -374,6 +390,34 @@ gradle :app:testDebugUnitTest
 
 # 5. Build debug APK
 gradle :app:assembleDebug</code></pre>
+          </div>
+        </div>
+
+        <!-- Automated Setup & Test Script Card -->
+        <div id="test-setup-card" class="card mt-4" style="border: 1px solid rgba(6, 182, 212, 0.4); background: linear-gradient(180deg, var(--bg-surface), rgba(6, 182, 212, 0.04));">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 44px; height: 44px; border-radius: 12px; background: rgba(6, 182, 212, 0.15); display: flex; align-items: center; justify-content: center; color: var(--cyan-accent); flex-shrink: 0;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              </div>
+              <div>
+                <h3 style="margin-bottom: 4px;">Automated Environment Check & Test Script</h3>
+                <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">Automates JDK 17+ and Android SDK verification, .env secrets checks, APK compilation, and full Robolectric test suite execution.</p>
+              </div>
+            </div>
+            <a href="test-setup.sh" download="test-setup.sh" class="btn-download-asset" style="padding: 12px 20px; font-weight: 700; font-size: 0.92rem; background: linear-gradient(135deg, #6366f1, #06b6d4); color: white; border-color: transparent; box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download test-setup.sh
+            </a>
+          </div>
+
+          <div style="margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.06);">
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 8px;">
+              To run the automated script in your terminal:
+            </p>
+            <div class="code-block">
+              <pre><code>chmod +x test-setup.sh && ./test-setup.sh</code></pre>
+            </div>
           </div>
         </div>
 
@@ -618,6 +662,296 @@ gradle :app:assembleDebug</code></pre>
                 </ul>
               </div>
             </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Google Play Store Asset Kit & Downloads (10 Assets) -->
+      <section id="playstore-assets" class="doc-section">
+        <div class="section-header">
+          <span class="step-num">06</span>
+          <div>
+            <h2>Google Play Store Asset Kit (10 Content Images)</h2>
+            <p>Certified high-resolution marketing assets, phone screenshots, and architectural infographics ready for Google Play Console submission.</p>
+          </div>
+        </div>
+
+        <div class="playstore-grid">
+          <!-- Asset 1: Feature Graphic -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_01_feature_graphic.jpg" alt="Play Store Feature Graphic Banner" loading="lazy">
+              <span class="playstore-badge-tag">FEATURE GRAPHIC</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">1. Play Store Feature Banner</h4>
+              <p class="playstore-desc">High-impact 1024x500 banner with glowing fintech circuits and 3D security shield for Play Store store listing header.</p>
+              <div class="playstore-meta">
+                <span>1024 x 500 px (16:9)</span>
+                <span class="badge-success">Play Console Ready</span>
+              </div>
+              <a href="assets/playstore_01_feature_graphic.jpg" download="playstore_feature_graphic_1024x500.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Banner (.JPG)
+              </a>
+            </div>
+          </article>
+
+          <!-- Asset 2: Dashboard Mockup -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_02_dashboard_mockup.jpg" alt="Dashboard Cockpit Mockup" loading="lazy">
+              <span class="playstore-badge-tag">SCREENSHOT 1</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">2. Subscription Dashboard</h4>
+              <p class="playstore-desc">Phone screenshot displaying active subscription status, live API quota consumption meters, and billing cycle telemetry.</p>
+              <div class="playstore-meta">
+                <span>1080 x 1920 px (9:16)</span>
+                <span class="badge-info">Phone Screenshot</span>
+              </div>
+              <a href="assets/playstore_02_dashboard_mockup.jpg" download="playstore_screenshot_01_dashboard.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Screenshot (.JPG)
+              </a>
+            </div>
+          </article>
+
+          <!-- Asset 3: Checkout Mockup -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_03_checkout_mockup.jpg" alt="Stripe Checkout Mockup" loading="lazy">
+              <span class="playstore-badge-tag">SCREENSHOT 2</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">3. Stripe 1-Tap Checkout</h4>
+              <p class="playstore-desc">Phone screenshot demonstrating native Stripe Elements payment sheet, annual 20% discount switch, and 3D Secure modal.</p>
+              <div class="playstore-meta">
+                <span>1080 x 1920 px (9:16)</span>
+                <span class="badge-info">Phone Screenshot</span>
+              </div>
+              <a href="assets/playstore_03_checkout_mockup.jpg" download="playstore_screenshot_02_checkout.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Screenshot (.JPG)
+              </a>
+            </div>
+          </article>
+
+          <!-- Asset 4: Security Architecture Mockup -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_04_security_mockup.jpg" alt="Security & Cryptography Mockup" loading="lazy">
+              <span class="playstore-badge-tag">SCREENSHOT 3</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">4. Hardware Keystore & AES-256</h4>
+              <p class="playstore-desc">Phone screenshot showing cryptographic security proof ledger, StrongBox HSM attestation, and biometric access toggle.</p>
+              <div class="playstore-meta">
+                <span>1080 x 1920 px (9:16)</span>
+                <span class="badge-info">Phone Screenshot</span>
+              </div>
+              <a href="assets/playstore_04_security_mockup.jpg" download="playstore_screenshot_03_security.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Screenshot (.JPG)
+              </a>
+            </div>
+          </article>
+
+          <!-- Asset 5: GDPR & Privacy Mockup -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_05_gdpr_mockup.jpg" alt="GDPR & Data Privacy Mockup" loading="lazy">
+              <span class="playstore-badge-tag">SCREENSHOT 4</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">5. GDPR Erasure & Data Export</h4>
+              <p class="playstore-desc">Phone screenshot featuring interactive tools for Article 20 JSON data download, Article 17 account hard purge, and CCPA opt-out.</p>
+              <div class="playstore-meta">
+                <span>1080 x 1920 px (9:16)</span>
+                <span class="badge-info">Phone Screenshot</span>
+              </div>
+              <a href="assets/playstore_05_gdpr_mockup.jpg" download="playstore_screenshot_04_gdpr.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Screenshot (.JPG)
+              </a>
+            </div>
+          </article>
+
+          <!-- Asset 6: High-Res App Icon -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_06_app_icon_512.jpg" alt="Play Store High-Res App Icon" loading="lazy">
+              <span class="playstore-badge-tag">PLAY STORE ICON</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">6. Official 512x512 App Icon</h4>
+              <p class="playstore-desc">High-resolution app icon featuring the BillingHub security shield emblem on deep indigo gradient background.</p>
+              <div class="playstore-meta">
+                <span>512 x 512 px (1:1)</span>
+                <span class="badge-success">Play Console Ready</span>
+              </div>
+              <a href="assets/playstore_06_app_icon_512.jpg" download="playstore_icon_512x512.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Icon (.JPG)
+              </a>
+            </div>
+          </article>
+
+          <!-- Asset 7: Dashboard Telemetry Infographic -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_07_dashboard_infographic.jpg" alt="Dashboard Telemetry Infographic" loading="lazy">
+              <span class="playstore-badge-tag">INFOGRAPHIC 1</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">7. Dashboard Telemetry Guide</h4>
+              <p class="playstore-desc">High-resolution infographic explaining quota progress counters, invoice receipt histories, and HMAC verification badges.</p>
+              <div class="playstore-meta">
+                <span>1080 x 810 px (4:3)</span>
+                <span class="badge-stripe">Visual User Guide</span>
+              </div>
+              <a href="assets/playstore_07_dashboard_infographic.jpg" download="playstore_guide_01_dashboard.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Guide (.JPG)
+              </a>
+            </div>
+          </article>
+
+          <!-- Asset 8: Stripe Billing Infographic -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_08_stripe_billing_infographic.jpg" alt="Stripe Billing Infographic" loading="lazy">
+              <span class="playstore-badge-tag">INFOGRAPHIC 2</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">8. Stripe Recurring Checkout</h4>
+              <p class="playstore-desc">Comprehensive infographic covering credit card Luhn validation, Stripe Elements tokenization, and SCA challenge flow.</p>
+              <div class="playstore-meta">
+                <span>1080 x 810 px (4:3)</span>
+                <span class="badge-stripe">Visual User Guide</span>
+              </div>
+              <a href="assets/playstore_08_stripe_billing_infographic.jpg" download="playstore_guide_02_stripe.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Guide (.JPG)
+              </a>
+            </div>
+          </article>
+
+          <!-- Asset 9: Security Infographic -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_09_security_infographic.jpg" alt="Security Infographic" loading="lazy">
+              <span class="playstore-badge-tag">INFOGRAPHIC 3</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">9. Cryptography & StrongBox</h4>
+              <p class="playstore-desc">Diagram detailing Galois/Counter Mode authenticated cipher, TLS 1.3 strict transit, and hardware-isolated Keymaster keys.</p>
+              <div class="playstore-meta">
+                <span>1080 x 810 px (4:3)</span>
+                <span class="badge-security">Visual User Guide</span>
+              </div>
+              <a href="assets/playstore_09_security_infographic.jpg" download="playstore_guide_03_security.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Guide (.JPG)
+              </a>
+            </div>
+          </article>
+
+          <!-- Asset 10: Developer Setup Infographic -->
+          <article class="playstore-card">
+            <div class="playstore-thumb-wrap">
+              <img src="assets/playstore_10_developer_setup_infographic.jpg" alt="Developer Setup Infographic" loading="lazy">
+              <span class="playstore-badge-tag">INFOGRAPHIC 4</span>
+            </div>
+            <div class="playstore-content">
+              <h4 class="playstore-title">10. Developer Architecture Guide</h4>
+              <p class="playstore-desc">Full deployment visual outlining deterministic Gradle builds, unit test automation, and GitHub Pages continuous integration.</p>
+              <div class="playstore-meta">
+                <span>1080 x 810 px (4:3)</span>
+                <span class="badge-stripe">Visual User Guide</span>
+              </div>
+              <a href="assets/playstore_10_developer_setup_infographic.jpg" download="playstore_guide_04_setup.jpg" class="btn-download-asset">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download Guide (.JPG)
+              </a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Section 7: ProGuard & R8 Configuration -->
+      <section id="proguard-rules" class="doc-section">
+        <div class="section-header">
+          <span class="step-num">07</span>
+          <div>
+            <h2>ProGuard & R8 Release Configuration</h2>
+            <p>Production rules configured in <code>app/proguard-rules.pro</code> for code shrinkage, obfuscation, and stack trace de-obfuscation in Google Play Console.</p>
+          </div>
+        </div>
+
+        <div class="spec-grid">
+          <div class="spec-card">
+            <h4>Stacktrace De-obfuscation</h4>
+            <p><code>-keepattributes SourceFile,LineNumberTable</code> preserves exact line numbers in Play Console crash telemetry without exposing proprietary implementation logic.</p>
+          </div>
+          <div class="spec-card">
+            <h4>Stripe & 3DS Elements</h4>
+            <p>Preserves all Stripe payment sheet classes, token models, and 3D Secure 2 authentication challenge interfaces against R8 class stripping.</p>
+          </div>
+          <div class="spec-card">
+            <h4>Moshi & Room Serialization</h4>
+            <p>Safeguards <code>@JsonClass</code> and <code>@Entity</code> reflection constructors, preventing runtime deserialization crashes on release builds.</p>
+          </div>
+          <div class="spec-card">
+            <h4>Hardware Keystore Enclave</h4>
+            <p>Locks JCA / JCE provider lookups and Android StrongBox Keymaster callbacks, ensuring hardware-isolated encryption keys function seamlessly in release mode.</p>
+          </div>
+        </div>
+
+        <div class="card mt-4">
+          <h3>Production ProGuard Configuration File (app/proguard-rules.pro)</h3>
+          <div class="code-block">
+            <pre><code># Stacktrace De-obfuscation & Line Number Preservation (Google Play Console)
+-keepattributes SourceFile,LineNumberTable
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod,Exceptions
+-renamesourcefileattribute SourceFile
+
+# Kotlin & Kotlinx Coroutines
+-keepclassmembers class kotlin.Metadata { public &lt;methods&gt;; }
+-dontwarn kotlinx.coroutines.**
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory { *; }
+
+# Jetpack Compose & AndroidX Lifecycle
+-keepclassmembers class * implements androidx.compose.runtime.State { *; }
+-keepclassmembers class * extends androidx.lifecycle.ViewModel { &lt;init&gt;(...); }
+
+# Room Database & SQLite
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class * { &lt;fields&gt;; }
+-keep @androidx.room.Dao interface * { &lt;methods&gt;; }
+
+# Moshi JSON Serialization
+-keep @com.squareup.moshi.JsonClass class * { *; }
+-keep class com.squareup.moshi.** { *; }
+
+# Retrofit & OkHttp
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+-keep class okhttp3.** { *; }
+
+# Stripe Android SDK & 3D Secure
+-keep class com.stripe.android.** { *; }
+-keep class com.stripe.android.model.** { &lt;fields&gt;; &lt;methods&gt;; }
+-keep class com.stripe.android.stripe3ds2.** { *; }
+
+# Cryptography, Android Keystore & StrongBox HSM
+-keep class javax.crypto.** { *; }
+-keep class android.security.keystore.** { *; }
+-keep class androidx.biometric.** { *; }
+
+# BillingHub Domain & Data Models
+-keep class com.example.data.models.** { *; }
+-keep class com.example.BuildConfig { *; }</code></pre>
           </div>
         </div>
       </section>

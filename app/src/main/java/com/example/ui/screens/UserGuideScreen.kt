@@ -401,6 +401,10 @@ private fun SetupCodeSnippetCard() {
 
       Text(
         text = """
+# Option A: Automated One-Step Verification Script
+chmod +x test-setup.sh && ./test-setup.sh
+
+# Option B: Manual Step-by-Step Setup
 # 1. Clone repo & navigate into directory
 git clone https://github.com/organization/billinghub.git
 cd billinghub
