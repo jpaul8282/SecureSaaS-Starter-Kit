@@ -30,7 +30,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Email
@@ -58,11 +60,15 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -367,6 +373,35 @@ private fun GuideSectionCard(
 
 @Composable
 private fun SetupCodeSnippetCard() {
+  val clipboardManager = LocalClipboardManager.current
+  var isCopied by remember { mutableStateOf(false) }
+
+  val snippetText = """
+# Option A: Automated One-Step Verification Script
+chmod +x test-setup.sh && ./test-setup.sh
+
+# Option B: Manual Step-by-Step Setup
+# 1. Clone repo & navigate into directory
+git clone https://github.com/organization/billinghub.git
+cd billinghub
+
+# 2. Configure .env with your Stripe Publishable Key
+echo "STRIPE_PUBLISHABLE_KEY=pk_test_..." >> .env
+
+# 3. Compile and run unit tests
+gradle :app:testDebugUnitTest
+
+# 4. Build debug APK
+gradle :app:assembleDebug
+  """.trimIndent()
+
+  LaunchedEffect(isCopied) {
+    if (isCopied) {
+      delay(2000)
+      isCopied = false
+    }
+  }
+
   Surface(
     modifier = Modifier.fillMaxWidth(),
     shape = RoundedCornerShape(16.dp),
@@ -389,35 +424,58 @@ private fun SetupCodeSnippetCard() {
             fontSize = 13.sp
           )
         }
-        Text(
-          text = "bash",
-          color = Color(0xFF94A3B8),
-          fontFamily = FontFamily.Monospace,
-          fontSize = 11.sp
-        )
+
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+          Text(
+            text = "bash",
+            color = Color(0xFF94A3B8),
+            fontFamily = FontFamily.Monospace,
+            fontSize = 11.sp
+          )
+
+          Surface(
+            shape = RoundedCornerShape(6.dp),
+            color = if (isCopied) SuccessGreen.copy(alpha = 0.2f) else Color(0xFF1E293B),
+            border = androidx.compose.foundation.BorderStroke(
+              1.dp,
+              if (isCopied) SuccessGreen.copy(alpha = 0.6f) else Color(0xFF475569)
+            ),
+            modifier = Modifier
+              .clickable {
+                clipboardManager.setText(AnnotatedString(snippetText))
+                isCopied = true
+              }
+              .testTag("btn_copy_terminal_snippet")
+          ) {
+            Row(
+              modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Icon(
+                if (isCopied) Icons.Default.Check else Icons.Default.ContentCopy,
+                contentDescription = "Copy code",
+                tint = if (isCopied) SuccessGreen else Color(0xFFE2E8F0),
+                modifier = Modifier.size(12.dp)
+              )
+              Spacer(modifier = Modifier.width(4.dp))
+              Text(
+                text = if (isCopied) "Copied" else "Copy",
+                color = if (isCopied) SuccessGreen else Color(0xFFE2E8F0),
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold
+              )
+            }
+          }
+        }
       }
 
       Spacer(modifier = Modifier.height(12.dp))
 
       Text(
-        text = """
-# Option A: Automated One-Step Verification Script
-chmod +x test-setup.sh && ./test-setup.sh
-
-# Option B: Manual Step-by-Step Setup
-# 1. Clone repo & navigate into directory
-git clone https://github.com/organization/billinghub.git
-cd billinghub
-
-# 2. Configure .env with your Stripe Publishable Key
-echo "STRIPE_PUBLISHABLE_KEY=pk_test_..." >> .env
-
-# 3. Compile and run unit tests
-gradle :app:testDebugUnitTest
-
-# 4. Build debug APK
-gradle :app:assembleDebug
-        """.trimIndent(),
+        text = snippetText,
         fontFamily = FontFamily.Monospace,
         fontSize = 11.sp,
         color = Color(0xFF38BDF8),
@@ -717,6 +775,16 @@ private fun DeveloperSetupFaqCard() {
                   }
 
                   if (faq.codeSnippet != null) {
+                    val clipboardManager = LocalClipboardManager.current
+                    var snippetCopied by remember { mutableStateOf(false) }
+
+                    LaunchedEffect(snippetCopied) {
+                      if (snippetCopied) {
+                        delay(2000)
+                        snippetCopied = false
+                      }
+                    }
+
                     Spacer(modifier = Modifier.height(10.dp))
                     Surface(
                       modifier = Modifier.fillMaxWidth(),
@@ -724,14 +792,61 @@ private fun DeveloperSetupFaqCard() {
                       color = Color(0xFF0A0F1D),
                       border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF1E293B))
                     ) {
-                      Text(
-                        text = faq.codeSnippet,
-                        fontFamily = FontFamily.Monospace,
-                        fontSize = 10.5.sp,
-                        color = Color(0xFF38BDF8),
-                        modifier = Modifier.padding(10.dp),
-                        lineHeight = 15.sp
-                      )
+                      Column(modifier = Modifier.padding(10.dp)) {
+                        Row(
+                          modifier = Modifier.fillMaxWidth(),
+                          horizontalArrangement = Arrangement.SpaceBetween,
+                          verticalAlignment = Alignment.CenterVertically
+                        ) {
+                          Text(
+                            text = "CONFIG",
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 9.5.sp,
+                            color = Color(0xFF64748B),
+                            fontWeight = FontWeight.Bold
+                          )
+
+                          Surface(
+                            shape = RoundedCornerShape(4.dp),
+                            color = if (snippetCopied) SuccessGreen.copy(alpha = 0.2f) else Color(0xFF1E293B),
+                            modifier = Modifier
+                              .clickable {
+                                clipboardManager.setText(AnnotatedString(faq.codeSnippet))
+                                snippetCopied = true
+                              }
+                              .testTag("btn_copy_faq_${faq.id}")
+                          ) {
+                            Row(
+                              modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                              verticalAlignment = Alignment.CenterVertically
+                            ) {
+                              Icon(
+                                if (snippetCopied) Icons.Default.Check else Icons.Default.ContentCopy,
+                                contentDescription = "Copy code",
+                                tint = if (snippetCopied) SuccessGreen else Color(0xFF94A3B8),
+                                modifier = Modifier.size(11.dp)
+                              )
+                              Spacer(modifier = Modifier.width(3.dp))
+                              Text(
+                                text = if (snippetCopied) "Copied" else "Copy",
+                                color = if (snippetCopied) SuccessGreen else Color(0xFFE2E8F0),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium
+                              )
+                            }
+                          }
+                        }
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Text(
+                          text = faq.codeSnippet,
+                          fontFamily = FontFamily.Monospace,
+                          fontSize = 10.5.sp,
+                          color = Color(0xFF38BDF8),
+                          lineHeight = 15.sp
+                        )
+                      }
                     }
                   }
                 }
