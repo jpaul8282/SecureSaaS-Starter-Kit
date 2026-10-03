@@ -48,7 +48,11 @@ android {
       ndk {
         debugSymbolLevel = "FULL"
       }
-      signingConfig = signingConfigs.getByName("release")
+      signingConfig = if (System.getenv("KEYSTORE_PATH") != null && file(System.getenv("KEYSTORE_PATH")).exists()) {
+        signingConfigs.getByName("release")
+      } else {
+        signingConfigs.getByName("debugConfig")
+      }
     }
     debug { signingConfig = signingConfigs.getByName("debugConfig") }
   }
