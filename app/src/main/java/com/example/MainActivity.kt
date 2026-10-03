@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Security
@@ -53,6 +54,7 @@ import com.example.service.StripeBillingManager
 import com.example.ui.components.InvoiceReceiptDialog
 import com.example.ui.components.StripePaymentSheetDialog
 import com.example.ui.components.StripeSettingsDialog
+import com.example.ui.screens.BillingHistoryScreen
 import com.example.ui.screens.DashboardScreen
 import com.example.ui.screens.PlansBillingScreen
 import com.example.ui.screens.SecurityPrivacyScreen
@@ -176,10 +178,22 @@ fun BillingHubApp() {
           modifier = Modifier.testTag("nav_tab_plans")
         )
         NavigationBarItem(
-          icon = { Icon(Icons.Default.Security, contentDescription = "Security & Privacy") },
-          label = { Text("Security") },
+          icon = { Icon(Icons.AutoMirrored.Filled.ReceiptLong, contentDescription = "Billing History") },
+          label = { Text("History") },
           selected = currentTab == 2,
           onClick = { currentTab = 2 },
+          colors = NavigationBarItemDefaults.colors(
+            selectedIconColor = IndigoPrimary,
+            selectedTextColor = IndigoPrimary,
+            indicatorColor = IndigoPrimary.copy(alpha = 0.15f)
+          ),
+          modifier = Modifier.testTag("nav_tab_history")
+        )
+        NavigationBarItem(
+          icon = { Icon(Icons.Default.Security, contentDescription = "Security & Privacy") },
+          label = { Text("Security") },
+          selected = currentTab == 3,
+          onClick = { currentTab = 3 },
           colors = NavigationBarItemDefaults.colors(
             selectedIconColor = IndigoPrimary,
             selectedTextColor = IndigoPrimary,
@@ -190,8 +204,8 @@ fun BillingHubApp() {
         NavigationBarItem(
           icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Users Guide") },
           label = { Text("Guide") },
-          selected = currentTab == 3,
-          onClick = { currentTab = 3 },
+          selected = currentTab == 4,
+          onClick = { currentTab = 4 },
           colors = NavigationBarItemDefaults.colors(
             selectedIconColor = IndigoPrimary,
             selectedTextColor = IndigoPrimary,
@@ -211,7 +225,8 @@ fun BillingHubApp() {
         0 -> DashboardScreen(
           billingManager = billingManager,
           onNavigateToPlans = { currentTab = 1 },
-          onNavigateToSecurity = { currentTab = 2 },
+          onNavigateToHistory = { currentTab = 2 },
+          onNavigateToSecurity = { currentTab = 3 },
           onViewInvoice = { selectedInvoice = it },
           onOpenStripeSettings = { showStripeSettings = true }
         )
@@ -221,10 +236,14 @@ fun BillingHubApp() {
             checkoutPlan = Pair(tier, cycle)
           }
         )
-        2 -> SecurityPrivacyScreen(
+        2 -> BillingHistoryScreen(
+          billingManager = billingManager,
+          onViewInvoice = { selectedInvoice = it }
+        )
+        3 -> SecurityPrivacyScreen(
           billingManager = billingManager
         )
-        3 -> UserGuideScreen()
+        4 -> UserGuideScreen()
       }
     }
   }

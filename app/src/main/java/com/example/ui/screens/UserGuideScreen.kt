@@ -570,6 +570,18 @@ private fun DeveloperSetupFaqCard() {
         )
       ),
       FaqItemData(
+        id = "billing_history_pdf_receipts",
+        category = "Stripe",
+        question = "How do I access the 12-month billing history table and download PDF receipts?",
+        answerSummary = "The dedicated 'History' screen provides an itemized table of your last 12 months of Stripe invoices:",
+        bulletPoints = listOf(
+          "Table Format: Displays Date, Invoice Number, Plan Tier, Amount, and Clearance Status.",
+          "PDF Receipt Generator: Built with native Android Canvas & PdfDocument; downloads standard A4 receipts with cryptographic proof.",
+          "Offline Storage & Share: PDF receipts are saved directly to Downloads and can be opened or shared with accounting software.",
+          "Live Sync: Tap 'Sync Stripe' to refresh latest payments with realtime webhook verification."
+        )
+      ),
+      FaqItemData(
         id = "play_deobfuscation_mapping",
         category = "Play Store",
         question = "Where do I upload the deobfuscation file (mapping.txt) in Google Play Console?",

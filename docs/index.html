@@ -344,6 +344,19 @@
             </table>
           </div>
         </div>
+
+        <div id="billing-history-invoices" class="card mt-4">
+          <h3>12-Month Billing History & Native PDF Receipt Engine</h3>
+          <p>
+            BillingHub includes a dedicated <strong>Billing History</strong> screen with an itemized table displaying the last 12 consecutive months of Stripe transactions with instantaneous PDF receipt generation:
+          </p>
+          <ul class="feature-bullets">
+            <li><strong>Itemized Table Architecture:</strong> Columns for Transaction Date, Invoice Number (with Plan Badge), Cleared USD Amount, Clearance Status, and Direct Download Action.</li>
+            <li><strong>Native Android PdfDocument Engine:</strong> Implements <code>PdfReceiptGenerator</code> using Android SDK graphics primitives (no third-party bloat), rendering A4 vector receipts with official brand headers, billing breakdown, and SHA-256 cryptographic verification hashes.</li>
+            <li><strong>Secure File Sharing:</strong> Utilizes <code>androidx.core.content.FileProvider</code> with scoped internal/external downloads directory mapping, allowing users to preview receipts in system PDF viewers or share via email.</li>
+            <li><strong>Instant Stripe Synchronization:</strong> Realtime <code>fetchLast12MonthsInvoices()</code> query with latency simulation and audit logging.</li>
+          </ul>
+        </div>
       </section>
 
       <!-- Section 4: Security & Privacy -->

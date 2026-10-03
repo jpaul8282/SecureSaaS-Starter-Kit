@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.CreditCard
@@ -39,6 +40,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -57,6 +59,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
+import com.example.util.PdfReceiptGenerator
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.R
@@ -71,10 +77,12 @@ import com.example.ui.theme.SuccessGreen
 fun DashboardScreen(
   billingManager: StripeBillingManager,
   onNavigateToPlans: () -> Unit,
+  onNavigateToHistory: () -> Unit,
   onNavigateToSecurity: () -> Unit,
   onViewInvoice: (Invoice) -> Unit,
   onOpenStripeSettings: () -> Unit,
 ) {
+  val context = LocalContext.current
   val subscription by billingManager.subscription.collectAsState()
   val invoices by billingManager.invoices.collectAsState()
   val webhooks by billingManager.webhookEvents.collectAsState()
@@ -416,22 +424,30 @@ fun DashboardScreen(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text(
-          text = "Stripe Billing Invoices",
-          style = MaterialTheme.typography.titleMedium,
-          fontWeight = FontWeight.Bold,
-          color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-          text = "${invoices.size} invoices",
-          style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Column {
+          Text(
+            text = "Recent Invoices",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+          )
+          Text(
+            text = "Last 12 months available in Billing History",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          )
+        }
+        TextButton(
+          onClick = onNavigateToHistory,
+          modifier = Modifier.testTag("dashboard_view_all_history_button")
+        ) {
+          Text("12-Mo Table →", color = IndigoPrimary, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+        }
       }
     }
 
-    // Invoices list
-    items(invoices) { invoice ->
+    // Recent invoices list (top 3)
+    items(invoices.take(3)) { invoice ->
       Card(
         modifier = Modifier
           .fillMaxWidth()
@@ -448,7 +464,7 @@ fun DashboardScreen(
           horizontalArrangement = Arrangement.SpaceBetween,
           verticalAlignment = Alignment.CenterVertically
         ) {
-          Row(verticalAlignment = Alignment.CenterVertically) {
+          Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
             Box(
               modifier = Modifier
                 .size(34.dp)
@@ -471,6 +487,7 @@ fun DashboardScreen(
               )
             }
           }
+
           Row(verticalAlignment = Alignment.CenterVertically) {
             Column(horizontalAlignment = Alignment.End) {
               Text(
@@ -480,15 +497,50 @@ fun DashboardScreen(
                 color = SuccessGreen
               )
               Text(
-                text = "View Receipt",
+                text = "Paid",
                 fontSize = 11.sp,
-                color = CyanAccent
+                color = CyanAccent,
+                fontWeight = FontWeight.Medium
               )
             }
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(6.dp))
+            IconButton(
+              onClick = {
+                val res = billingManager.downloadPdfReceipt(context, invoice)
+                res.onSuccess { file ->
+                  Toast.makeText(context, "Saved ${file.name}", Toast.LENGTH_SHORT).show()
+                  try {
+                    context.startActivity(PdfReceiptGenerator.openPdfIntent(context, file))
+                  } catch (e: Exception) {
+                    // Handled
+                  }
+                }.onFailure { err ->
+                  Toast.makeText(context, "Download failed: ${err.message}", Toast.LENGTH_SHORT).show()
+                }
+              },
+              modifier = Modifier.size(36.dp)
+            ) {
+              Icon(Icons.Default.Download, contentDescription = "Download PDF", tint = IndigoPrimary, modifier = Modifier.size(18.dp))
+            }
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
           }
         }
+      }
+    }
+
+    // View All Invoices Card Button
+    item {
+      OutlinedButton(
+        onClick = onNavigateToHistory,
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(44.dp)
+          .testTag("dashboard_view_history_full_button"),
+        shape = RoundedCornerShape(12.dp)
+      ) {
+        Icon(Icons.AutoMirrored.Filled.ReceiptLong, contentDescription = null, modifier = Modifier.size(16.dp))
+        Spacer(modifier = Modifier.width(8.dp))
+        Text("View Complete 12-Month Billing History Table (${invoices.size} Invoices)")
       }
     }
 

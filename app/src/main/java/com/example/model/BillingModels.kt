@@ -86,6 +86,26 @@ data class Invoice(
   val planName: String,
   val billingPeriod: String,
   val receiptUrl: String,
+  val subtotal: String = amount,
+  val tax: String = "$0.00",
+  val currency: String = "USD",
+  val paymentMethod: String = "Visa ending in 4242",
+  val paidAt: String = date,
+  val items: List<InvoiceLineItem> = emptyList(),
+  val pdfFileName: String = "Stripe_Receipt_${invoiceNumber}.pdf"
+) {
+  val numericAmount: Double
+    get() = amount.replace("$", "").toDoubleOrNull() ?: 0.0
+
+  val isPaid: Boolean
+    get() = status.equals("Paid", ignoreCase = true)
+}
+
+data class InvoiceLineItem(
+  val description: String,
+  val quantity: Int = 1,
+  val unitAmount: String,
+  val totalAmount: String
 )
 
 data class SecurityAuditEntry(
