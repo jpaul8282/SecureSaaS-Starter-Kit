@@ -124,6 +124,9 @@ echo -e "${CYAN}----------------------------------------------------------------
 echo -e "  ✓ Environment:       Verified (Java, Android SDK, .env)"
 echo -e "  ✓ Compilation:       :app:assembleDebug (PASSED)"
 echo -e "  ✓ Test Suite:        :app:testDebugUnitTest (PASSED)"
+echo -e "  ✓ App Target Module: :app (com.aistudio.billinghub.vxfkrz v6.0)"
+echo -e "  ✓ Play Deobfuscation: docs/assets/mapping.zip (Ready)"
+echo -e "  ✓ Native Symbols:    docs/assets/native-debug-symbols.zip (Ready)"
 echo -e "  ✓ Time Elapsed:      ${DURATION} seconds"
 
 if [[ -d "app/build/reports/tests/testDebugUnitTest" ]]; then

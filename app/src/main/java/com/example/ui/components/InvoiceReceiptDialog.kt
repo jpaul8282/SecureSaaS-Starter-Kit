@@ -15,11 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ReceiptLong
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -75,7 +75,7 @@ fun InvoiceReceiptDialog(
               contentAlignment = Alignment.Center
             ) {
               Icon(
-                Icons.Default.ReceiptLong,
+                Icons.AutoMirrored.Filled.ReceiptLong,
                 contentDescription = null,
                 tint = SuccessGreen,
                 modifier = Modifier.size(20.dp)
@@ -164,7 +164,7 @@ fun InvoiceReceiptDialog(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Divider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(

@@ -29,6 +29,7 @@
         <a href="#faq" class="nav-link">FAQ</a>
         <a href="#playstore-assets" class="nav-link">Play Store Kit (10)</a>
         <a href="#proguard-rules" class="nav-link">ProGuard</a>
+        <a href="#play-deobfuscation" class="nav-link">Deobfuscation & Symbols</a>
         <button id="theme-toggle" class="btn-icon" aria-label="Toggle Theme">
           <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
         </button>
@@ -69,6 +70,7 @@
           <span class="group-title">PLAY STORE & RELEASES</span>
           <a href="#playstore-assets">Play Store Assets (10)</a>
           <a href="#proguard-rules">ProGuard & R8 Config</a>
+          <a href="#play-deobfuscation">Deobfuscation & Symbols</a>
         </div>
       </nav>
     </aside>
@@ -1060,9 +1062,167 @@ gradle :app:assembleDebug</code></pre>
 -keep class android.security.keystore.** { *; }
 -keep class androidx.biometric.** { *; }
 
-# BillingHub Domain & Data Models
--keep class com.example.data.models.** { *; }
--keep class com.example.BuildConfig { *; }</code></pre>
+# BillingHub App Module Specific Rules (com.example)
+-keep class com.example.MainActivity { *; }
+-keep class com.example.BuildConfig { *; }
+-keep class com.example.model.BillingCycle { *; }
+-keep class com.example.model.SubscriptionTier { *; }
+-keep class com.example.model.UserSubscription { *; }
+-keep class com.example.model.Invoice { *; }
+-keep class com.example.model.SecurityAuditEntry { *; }
+-keep class com.example.model.StripeWebhookEvent { *; }
+-keepclassmembers class com.example.model.** { &lt;fields&gt;; &lt;methods&gt;; }
+-keep class com.example.service.StripeBillingManager { public &lt;methods&gt;; private &lt;fields&gt;; }
+-keep class com.example.service.** { *; }
+-keep class com.example.ui.components.** { *; }
+-keep class com.example.ui.screens.** { *; }
+-keep class com.example.ui.theme.** { *; }</code></pre>
+          </div>
+        </div>
+
+        <!-- Google Play Console Deobfuscation File & Native Debug Symbols Section -->
+        <div id="play-deobfuscation" class="card mt-4" style="border: 1px solid rgba(99, 102, 241, 0.4); background: linear-gradient(180deg, var(--bg-surface), rgba(99, 102, 241, 0.05));">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(99, 102, 241, 0.15); display: flex; align-items: center; justify-content: center; color: var(--indigo-primary); flex-shrink: 0;">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg>
+              </div>
+              <div>
+                <h3 style="margin-bottom: 4px;">Google Play Console Deobfuscation & Native Symbols</h3>
+                <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">Associated with App Bundle: <strong>com.aistudio.billinghub.vxfkrz</strong> (VersionCode 6 • VersionName 6.0)</p>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <a href="assets/mapping.zip" download="mapping_v6.zip" class="btn-download-asset" style="padding: 10px 18px; font-weight: 700; background: linear-gradient(135deg, var(--indigo-primary), #4338ca); color: white; border-color: transparent; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download mapping.zip (3.3MB)
+              </a>
+              <a href="assets/native-debug-symbols.zip" download="native-debug-symbols_v6.zip" class="btn-download-asset" style="padding: 10px 18px; font-weight: 700; background: linear-gradient(135deg, var(--cyan-accent), #0891b2); color: white; border-color: transparent; box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Download native-debug-symbols.zip (29KB)
+              </a>
+            </div>
+          </div>
+
+          <div class="spec-grid" style="margin-bottom: 20px;">
+            <div class="spec-card">
+              <span class="badge-stripe" style="margin-bottom: 8px; display: inline-block;">PLAY CONSOLE WARNING 1</span>
+              <h4>"Add a deobfuscation file associated with this App Bundle"</h4>
+              <p>
+                R8 shrinks and obfuscates class, field, and method names (e.g. <code>com.example.BillingService</code> becomes <code>a.b.c</code>) to reduce binary size and protect proprietary IP. Play Console requires <code>mapping.txt</code> to reconstruct human-readable crash and ANR reports.
+              </p>
+            </div>
+            <div class="spec-card">
+              <span class="badge-security" style="margin-bottom: 8px; display: inline-block;">PLAY CONSOLE WARNING 2</span>
+              <h4>"This App Bundle contains native code, and you've not uploaded debug symbols"</h4>
+              <p>
+                The bundle includes native libraries (<code>libandroidx.graphics.path.so</code> and <code>libdatastore_shared_counter.so</code> across <code>arm64-v8a</code>, <code>armeabi-v7a</code>, <code>x86</code>, and <code>x86_64</code>). Unstripped debug symbols allow Play Console to symbolize C/C++ tombstone traces.
+              </p>
+            </div>
+          </div>
+
+          <div class="card" style="background: var(--bg-surface-elevated); margin-top: 14px;">
+            <h4 style="margin-bottom: 12px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              Step-by-Step Google Play Console Upload Instructions
+            </h4>
+            <ol class="step-list">
+              <li>
+                <strong>Navigate to App Bundle Explorer:</strong> Log into <a href="https://play.google.com/console" target="_blank" style="color: var(--cyan-accent); text-decoration: underline;">Google Play Console</a>, open the <strong>BillingHub</strong> application, and click <strong>App bundle explorer</strong> in the left sidebar navigation under <em>Release</em>.
+              </li>
+              <li>
+                <strong>Select App Bundle Version:</strong> Select <strong>VersionCode 6 (Version 6.0)</strong> from the bundle version dropdown or table.
+              </li>
+              <li>
+                <strong>Open Downloads Tab:</strong> Click the <strong>Downloads</strong> tab on the right side of the screen.
+              </li>
+              <li>
+                <strong>Upload Deobfuscation File:</strong> Under the <strong>Assets</strong> section, locate <strong>Deobfuscation file</strong> (or <strong>ReTrace mapping file</strong>). Click the upload arrow button and upload <code>mapping.zip</code> (or unzipped <code>mapping.txt</code>).
+              </li>
+              <li>
+                <strong>Upload Native Debug Symbols:</strong> Under the <strong>Native debug symbols</strong> section, click the upload arrow button and upload <code>native-debug-symbols.zip</code>.
+              </li>
+              <li>
+                <strong>Verify ANR & Crash Resolution:</strong> Under <strong>Quality &gt; Android Vitals &gt; Crashes and ANRs</strong>, all incoming crashes and ANR (Application Not Responding) traces will automatically be deobfuscated and displayed with exact file names and line numbers.
+              </li>
+            </ol>
+          </div>
+
+          <!-- Exact App Module Technical Specification -->
+          <div class="card" style="background: var(--bg-surface-elevated); margin-top: 14px;">
+            <h4 style="margin-bottom: 12px; color: var(--text-primary);">
+              Exact App Module Build & Deobfuscation Profile
+            </h4>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Configuration Parameter</th>
+                    <th>Module Value</th>
+                    <th>Google Play Console Relevance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Gradle Module Path</strong></td>
+                    <td><code>:app</code></td>
+                    <td>Primary application build module containing UI, services, and models.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Android Namespace</strong></td>
+                    <td><code>com.example</code></td>
+                    <td>Base R package and source code package root.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Application ID</strong></td>
+                    <td><code>com.aistudio.billinghub.vxfkrz</code></td>
+                    <td>Unique Google Play store identifier and package bundle key.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Version Code / Name</strong></td>
+                    <td><code>6</code> / <code>"6.0"</code></td>
+                    <td>Target release bundle version matching generated <code>mapping.txt</code>.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>SDK Target / Min</strong></td>
+                    <td><code>targetSdk 36</code> / <code>minSdk 24</code></td>
+                    <td>Complies with Google Play Android 14+ target API requirements.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Included Native Binaries</strong></td>
+                    <td><code>libandroidx.graphics.path.so</code><br><code>libdatastore_shared_counter.so</code></td>
+                    <td>Packaged across 4 architectures in <code>native-debug-symbols.zip</code>.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Preserved Entry Points</strong></td>
+                    <td><code>com.example.MainActivity</code><br><code>com.example.service.StripeBillingManager</code><br><code>com.example.model.*</code></td>
+                    <td>Safeguarded against reflection and serialization stripped methods.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 18px;">
+              <h5 style="margin-bottom: 8px; color: var(--cyan-accent); font-size: 0.95rem;">
+                ANR & Crash Telemetry Deobfuscation Example (Android Vitals)
+              </h5>
+              <div class="spec-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <div class="spec-card" style="background: rgba(239, 68, 68, 0.06); border-color: rgba(239, 68, 68, 0.3);">
+                  <span class="badge-error" style="margin-bottom: 6px; display: inline-block;">RAW OBFUSCATED TRACE (NO MAPPING)</span>
+                  <pre style="font-size: 11px; color: #fca5a5; line-height: 1.4; overflow-x: auto;"><code>"main" prio=5 tid=1 Blocked
+  at com.example.a.b.c(Source:14)
+  at com.example.c.d.a(Source:89)
+  at com.example.ui.a.b(Source:201)</code></pre>
+                </div>
+                <div class="spec-card" style="background: rgba(16, 185, 129, 0.06); border-color: rgba(16, 185, 129, 0.3);">
+                  <span class="badge-success" style="margin-bottom: 6px; display: inline-block;">DEOBFUSCATED TRACE (WITH MAPPING.TXT)</span>
+                  <pre style="font-size: 11px; color: #6ee7b7; line-height: 1.4; overflow-x: auto;"><code>"main" prio=5 tid=1 Blocked
+  at com.example.service.StripeBillingManager.confirmSubscriptionTier(StripeBillingManager.kt:188)
+  at com.example.ui.screens.PlansBillingScreen$SelectPlanButton(PlansBillingScreen.kt:245)
+  at com.example.MainActivity$BillingHubApp(MainActivity.kt:201)</code></pre>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

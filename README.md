@@ -348,6 +348,29 @@ The project includes production rules in `app/proguard-rules.pro`:
 
 ---
 
+## Google Play Console Deobfuscation File & Native Debug Symbols (Version 6.0)
+
+When releasing an Android App Bundle (`.aab`) with R8 minification and native libraries, Google Play Console requires two diagnostic files to properly symbolize crash reports and Application Not Responding (ANR) events:
+
+### 1. Deobfuscation File (`mapping.txt` / `mapping.zip`)
+- **Warning Resolved**: *"Add a deobfuscation file associated with this App Bundle"*
+- **File Locations**:
+  - `app/build/outputs/mapping/release/mapping.txt` (41MB raw ReTrace map)
+  - `docs/assets/mapping.zip` (3.3MB compressed archive)
+- **Play Console Upload**: In **App bundle explorer** > Select **VersionCode 6 (Version 6.0)** > Open the **Downloads** tab > Under **Assets**, upload `mapping.zip` or `mapping.txt`.
+- **ANR & Crash Telemetry**: Android Vitals and Crashlytics use this file to map obfuscated stack traces (e.g., `a.b.c(Unknown Source:12)`) back to the original Kotlin source files and line numbers (`com.example.ui.screens.DashboardScreen.kt:142`).
+
+### 2. Native Debug Symbols (`native-debug-symbols.zip`)
+- **Warning Resolved**: *"This App Bundle contains native code, and you've not uploaded debug symbols"*
+- **File Locations**:
+  - `app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip` (29KB)
+  - `docs/assets/native-debug-symbols.zip`
+- **Architectures Included**: `arm64-v8a`, `armeabi-v7a`, `x86`, and `x86_64` for `libandroidx.graphics.path.so` and `libdatastore_shared_counter.so`.
+- **Play Console Upload**: In **App bundle explorer** > Select **Version 6** > Open the **Downloads** tab > Under **Native debug symbols**, upload `native-debug-symbols.zip`.
+- **Native Crash Telemetry**: Enables Google Play to decode native C/C++ tombstone traces, SIGSEGV crashes, and memory aborts.
+
+---
+
 ## Developer Support & Assistance
 
 Need technical assistance with the Stripe integration, webhooks, or encryption configuration? Contact our developer support team directly:

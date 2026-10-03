@@ -40,7 +40,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -220,7 +220,7 @@ fun SecurityPrivacyScreen(
           )
 
           Spacer(modifier = Modifier.height(14.dp))
-          Divider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+          HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
           Spacer(modifier = Modifier.height(14.dp))
 
           // Privacy preference toggles
@@ -336,7 +336,7 @@ fun SecurityPrivacyScreen(
             purpose = "App functionality, recurring billing, fraud prevention.",
             protection = "Shared only with Stripe PCI-DSS Level 1 vault. Raw PAN/CVC never collected."
           )
-          Divider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
+          HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 
           DataSafetyRow(
             category = "Personal Information",
@@ -344,7 +344,7 @@ fun SecurityPrivacyScreen(
             purpose = "Authentication, billing communication, receipt dispatch.",
             protection = "Encrypted in Android Keystore HSM. Never sold to third parties."
           )
-          Divider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
+          HorizontalDivider(modifier = Modifier.padding(vertical = 10.dp), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.15f))
 
           DataSafetyRow(
             category = "App Telemetry & Logs",

@@ -568,6 +568,29 @@ private fun DeveloperSetupFaqCard() {
           "Right to Erasure (Art. 17): Irreversibly purges database records, wipes Keystore keys, and cancels subscriptions.",
           "CCPA Do-Not-Sell: Immediate toggle switch to opt out of third-party telemetry."
         )
+      ),
+      FaqItemData(
+        id = "play_deobfuscation_mapping",
+        category = "Play Store",
+        question = "Where do I upload the deobfuscation file (mapping.txt) in Google Play Console?",
+        answerSummary = "Google Play Console requires the R8 mapping file to symbolicate obfuscated crash reports and ANRs:",
+        bulletPoints = listOf(
+          "Open Play Console: Navigate to Release > App bundle explorer.",
+          "Select Version: Choose VersionCode 6 (Version 6.0) from the bundle selector.",
+          "Downloads Tab: Click Downloads > Assets > Deobfuscation file and upload mapping.zip (or mapping.txt).",
+          "ANR Resolution: Once uploaded, Android Vitals translates obfuscated stack traces (e.g. a.b.c) into human-readable Kotlin code lines."
+        )
+      ),
+      FaqItemData(
+        id = "play_native_debug_symbols",
+        category = "Play Store",
+        question = "How do I resolve the 'App Bundle contains native code, and you've not uploaded debug symbols' warning?",
+        answerSummary = "Upload native-debug-symbols.zip containing unstripped .so debug symbols for all architectures:",
+        bulletPoints = listOf(
+          "Included Architectures: Contains symbols for arm64-v8a, armeabi-v7a, x86, and x86_64 for libandroidx.graphics.path.so and libdatastore_shared_counter.so.",
+          "Upload Location: Play Console > App bundle explorer > Select version > Downloads tab > Native debug symbols.",
+          "Native Tombstones: Allows Google Play to resolve native C/C++ crash tombstones and SIGSEGV stack traces."
+        )
       )
     )
   }
@@ -576,6 +599,7 @@ private fun DeveloperSetupFaqCard() {
     when (selectedCategory) {
       "Stripe" -> faqList.filter { it.category == "Stripe" }
       "Security" -> faqList.filter { it.category == "Security" }
+      "Play Store" -> faqList.filter { it.category == "Play Store" }
       else -> faqList
     }
   }
@@ -632,8 +656,13 @@ private fun DeveloperSetupFaqCard() {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()
       ) {
-        listOf("All", "Stripe", "Security").forEach { cat ->
+        listOf("All", "Stripe", "Security", "Play Store").forEach { cat ->
           val isSelected = selectedCategory == cat
+          val chipThemeColor = when (cat) {
+            "Security" -> CyanAccent
+            "Play Store" -> Color(0xFF10B981)
+            else -> IndigoPrimary
+          }
           FilterChip(
             selected = isSelected,
             onClick = { selectedCategory = cat },
@@ -645,14 +674,14 @@ private fun DeveloperSetupFaqCard() {
               )
             },
             colors = FilterChipDefaults.filterChipColors(
-              selectedContainerColor = if (cat == "Security") CyanAccent.copy(alpha = 0.2f) else IndigoPrimary.copy(alpha = 0.2f),
-              selectedLabelColor = if (cat == "Security") CyanAccent else IndigoPrimary
+              selectedContainerColor = chipThemeColor.copy(alpha = 0.2f),
+              selectedLabelColor = chipThemeColor
             ),
             border = FilterChipDefaults.filterChipBorder(
               enabled = true,
               selected = isSelected,
               borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-              selectedBorderColor = if (cat == "Security") CyanAccent else IndigoPrimary
+              selectedBorderColor = chipThemeColor
             )
           )
         }
@@ -699,15 +728,25 @@ private fun DeveloperSetupFaqCard() {
                   verticalAlignment = Alignment.CenterVertically,
                   modifier = Modifier.weight(1f)
                 ) {
+                  val catBadgeColor = when (faq.category) {
+                    "Security" -> CyanAccent
+                    "Play Store" -> Color(0xFF10B981)
+                    else -> IndigoPrimary
+                  }
+                  val catBadgeIcon = when (faq.category) {
+                    "Security" -> Icons.Default.Security
+                    "Play Store" -> Icons.Default.Build
+                    else -> Icons.Default.Payment
+                  }
                   Surface(
                     shape = RoundedCornerShape(6.dp),
-                    color = if (faq.category == "Stripe") IndigoPrimary.copy(alpha = 0.15f) else CyanAccent.copy(alpha = 0.15f),
+                    color = catBadgeColor.copy(alpha = 0.15f),
                     modifier = Modifier.padding(end = 10.dp)
                   ) {
                     Icon(
-                      if (faq.category == "Stripe") Icons.Default.Payment else Icons.Default.Security,
+                      catBadgeIcon,
                       contentDescription = null,
-                      tint = if (faq.category == "Stripe") IndigoPrimary else CyanAccent,
+                      tint = catBadgeColor,
                       modifier = Modifier
                         .padding(5.dp)
                         .size(16.dp)

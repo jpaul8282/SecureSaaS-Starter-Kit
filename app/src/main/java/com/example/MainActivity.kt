@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Shield
@@ -188,7 +188,7 @@ fun BillingHubApp() {
           modifier = Modifier.testTag("nav_tab_security")
         )
         NavigationBarItem(
-          icon = { Icon(Icons.Default.MenuBook, contentDescription = "Users Guide") },
+          icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Users Guide") },
           label = { Text("Guide") },
           selected = currentTab == 3,
           onClick = { currentTab = 3 },
