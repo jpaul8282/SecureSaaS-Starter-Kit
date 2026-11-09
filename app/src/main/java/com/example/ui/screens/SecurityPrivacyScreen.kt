@@ -2,6 +2,7 @@ package com.example.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,19 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.service.StripeBillingManager
 
-/** Makes the prototype scope explicit; none of these cards are production security controls. */
 @Composable
-fun SecurityPrivacyScreen(
-  @Suppress("UNUSED_PARAMETER") billingManager: StripeBillingManager,
-) {
+fun SecurityPrivacyScreen(@Suppress("UNUSED_PARAMETER") billingManager: StripeBillingManager) {
   LazyColumn(
     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-    contentPadding = androidx.compose.foundation.layout.PaddingValues(top = 16.dp, bottom = 96.dp),
+    contentPadding = PaddingValues(top = 16.dp, bottom = 96.dp),
     verticalArrangement = Arrangement.spacedBy(12.dp),
   ) {
-    item {
-      Text("Privacy & prototype status", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-    }
+    item { Text("Privacy & prototype status", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold) }
     item {
       Card(
         modifier = Modifier.fillMaxWidth(),
@@ -37,25 +33,21 @@ fun SecurityPrivacyScreen(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
       ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          Text("Demo data only", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-          Text(
-            "This showcase uses sample billing and security records. It does not connect to Stripe, verify webhooks, provide encryption/audit guarantees, or establish GDPR/CCPA compliance. Do not enter sensitive personal or payment information.",
-            style = MaterialTheme.typography.bodyMedium,
-          )
+          Text("Sample data only", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+          Text("This showcase does not connect to Stripe, verify webhooks, provide production security controls, or establish regulatory compliance. Do not enter sensitive personal or payment information.")
         }
       }
     }
     item {
       Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          Text("Privacy requests are not connected", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-          Text(
-            "The current prototype cannot export or delete a real account or data held by a service provider. No request should be treated as completed. Implement authenticated backend workflows before offering these controls to real users.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-          )
+          Text("Privacy services are not connected", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+          Text("The prototype cannot export or delete real account data or data held by a service provider. No privacy request can be submitted or treated as complete from this screen.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
       }
+    }
+    item {
+      Text("The app has no configured analytics or account backend. Review the actual released binary and its dependencies before completing Google Play Data safety disclosures.", style = MaterialTheme.typography.bodyMedium)
     }
   }
 }

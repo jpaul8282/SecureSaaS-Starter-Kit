@@ -1,24 +1,23 @@
 # BillingHub — Android billing UI prototype
 
-BillingHub is a Kotlin / Jetpack Compose **showcase prototype** for exploring subscription and account-management screen designs. It is not a production billing app or a payment processor. Billing state, invoices, webhook events, and security/audit entries in the current app are sample data or local simulations.
+BillingHub is a Kotlin / Jetpack Compose **showcase prototype** for exploring subscription and account-management screen designs. It is not a production billing app or payment processor. Billing state is local sample state; no backend or live Stripe integration is connected.
 
-> **Important:** No real payment is taken, no real Stripe subscription is created, and the app does not provide verified security controls or regulatory compliance. Do not enter real payment-card, account, or other sensitive information. Do not use screenshots or copy that implies otherwise.
+> **Demo only:** No real payment is taken, no subscription is created, and no verified security or compliance service is provided. Do not enter real payment-card, account, or other sensitive information.
 
 ## Current capabilities
 
-- Android UI prototype for dashboard, plan selection, billing history, security/privacy, and a user guide.
-- Local demo flows for exploring UI states.
+- Android UI prototype for dashboard, illustrative plan comparison, empty billing history, and prototype/privacy information.
+- Local navigation and presentation state for exploring layouts.
 - Static documentation site under `docs/`.
 
 ## Not implemented
 
-- A backend that authenticates users or creates Stripe PaymentIntents/Subscriptions.
-- Stripe Android PaymentSheet or a real payment flow.
-- A real webhook receiver with signature verification and idempotent event processing.
-- Persisted user billing data, actual data export/deletion, or production audit records.
-- The encryption, telemetry, biometric, and compliance guarantees previously described in parts of the UI/docs.
+- Authenticated backend or live Stripe PaymentSheet/payment/subscription flow.
+- Webhook receiver, signature verification, or event processing.
+- Real customer/invoice records, receipt downloads, or account billing.
+- Backend-based export/deletion, production encryption, security audit evidence, telemetry controls, or regulatory compliance.
 
-The checkout screen intentionally does not collect card details or report a simulated payment as successful. The prototype must not be used to process payments.
+Checkout is disabled, does not ask for card details, and never reports a payment as successful. The repository contains no real invoices or customer records in the app's initial state.
 
 ## Build and test
 
@@ -33,12 +32,4 @@ A Gradle wrapper is not currently included. Use an installed compatible Gradle d
 
 ## Before any Google Play release
 
-This prototype is **not ready for Google Play production distribution**. At a minimum:
-
-1. Implement and independently test a backend and Stripe integration; never put Stripe secret or webhook signing keys in the Android app.
-2. Replace all sample content and simulated flows with real, authenticated data—or keep the app clearly demo-only and do not represent simulations as actual services.
-3. Implement and verify account deletion and export, then ensure the Play Data safety form, privacy policy, and in-app disclosures match the released binary and actual data flows.
-4. Provide a real privacy policy, support contact, app identity, release signing, accessibility review, and device/API-level testing.
-5. Remove private release mapping artifacts from the public repository and archive them securely per release.
-
-See [`docs/PLAY_STORE_READINESS.md`](docs/PLAY_STORE_READINESS.md) for the release checklist. Google Play approval and legal/regulatory compliance cannot be guaranteed by this project.
+This prototype is **not ready for production distribution as a live billing/security product**. Consult [`docs/PLAY_STORE_READINESS.md`](docs/PLAY_STORE_READINESS.md). In particular, implement and validate a backend and payment flow, accurate privacy requests and disclosures, release signing, accessibility, and device/API-level testing. Google Play approval and legal/regulatory compliance cannot be guaranteed by this project.

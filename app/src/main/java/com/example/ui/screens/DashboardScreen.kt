@@ -46,7 +46,7 @@ fun DashboardScreen(
       ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
           Text("Showcase prototype", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-          Text("Sample data only. There is no live Stripe connection, real subscription, or production security service.", style = MaterialTheme.typography.bodyMedium)
+          Text("Sample interface only. There is no live Stripe connection, real subscription, or production security service.", style = MaterialTheme.typography.bodyMedium)
         }
       }
     }
@@ -54,8 +54,8 @@ fun DashboardScreen(
       Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
           Text("Illustrative dashboard", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-          Text("Sample plan: ${subscription.tier.title} · ${subscription.status}", style = MaterialTheme.typography.bodyLarge)
-          Text("The displayed values are local demo content and are not retrieved from a customer account.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+          Text("Sample state: ${subscription.tier.title} · ${subscription.status}", style = MaterialTheme.typography.bodyLarge)
+          Text("Values are local demo content and are not retrieved from a customer account.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
       }
     }

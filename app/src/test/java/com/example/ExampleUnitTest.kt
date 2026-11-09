@@ -5,55 +5,47 @@ import com.example.model.SubscriptionTier
 import com.example.service.StripeBillingManager
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ExampleUnitTest {
   @Test
-  fun addition_isCorrect() {
-    assertEquals(4, 2 + 2)
+  fun billingManagerStartsWithNoCustomerOrBillingRecords() {
+    val manager = StripeBillingManager()
+    assertEquals(SubscriptionTier.STARTER, manager.subscription.value.tier)
+    assertEquals("Demo", manager.subscription.value.status)
+    assertTrue(manager.subscription.value.stripeCustomerId.isBlank())
+    assertTrue(manager.subscription.value.stripeSubscriptionId.isBlank())
+    assertEquals("No payment method", manager.subscription.value.paymentMethodSummary)
+    assertTrue(manager.invoices.value.isEmpty())
   }
 
   @Test
-  fun stripeBillingManager_initialStateIsCorrect() {
+  fun checkoutDoesNotAcceptCardDataOrChangeSubscription() = runBlocking {
     val manager = StripeBillingManager()
-    assertEquals(SubscriptionTier.PRO, manager.subscription.value.tier)
-    assertEquals(BillingCycle.MONTHLY, manager.billingCycle.value)
-    assertTrue(manager.invoices.value.isNotEmpty())
-    assertTrue(manager.securityLogs.value.isNotEmpty())
+    val original = manager.subscription.value
+
+    val result = manager.processSubscriptionChange(SubscriptionTier.PRO, BillingCycle.MONTHLY)
+
+    assertTrue(result.isFailure)
+    assertEquals(original, manager.subscription.value)
+    assertTrue(manager.invoices.value.isEmpty())
   }
 
   @Test
-  fun stripeBillingManager_processPlanUpgrade_createsInvoiceAndLog() = runBlocking {
+  fun invoiceFetchFailsClearlyWhenNoBackendIsConfigured() = runBlocking {
     val manager = StripeBillingManager()
-    val initialInvoicesCount = manager.invoices.value.size
-    val initialLogsCount = manager.securityLogs.value.size
+    val result = manager.fetchLast12MonthsInvoices()
 
-    val result = manager.processSubscriptionChange(
-      newTier = SubscriptionTier.ENTERPRISE,
-      cycle = BillingCycle.ANNUAL,
-      cardNumber = "4242 4242 4242 4242",
-      cardExpiry = "12/28",
-      cardCvc = "123",
-      cardholderName = "Jane Dev"
-    )
-
-    assertTrue(result.isSuccess)
-    assertEquals(SubscriptionTier.ENTERPRISE, manager.subscription.value.tier)
-    assertEquals(BillingCycle.ANNUAL, manager.subscription.value.billingCycle)
-    assertEquals(initialInvoicesCount + 1, manager.invoices.value.size)
-    assertEquals(initialLogsCount + 1, manager.securityLogs.value.size)
+    assertTrue(result.isFailure)
+    assertFalse(result.isSuccess)
+    assertTrue(manager.invoices.value.isEmpty())
   }
 
   @Test
-  fun stripeBillingManager_gdprExport_containsStructuredMetadata() {
-    val manager = StripeBillingManager()
-    val json = manager.exportUserDataJson()
-    assertNotNull(json)
-    assertTrue(json.contains("customer_id"))
-    assertTrue(json.contains("AES-256-GCM"))
-    assertTrue(json.contains("TLS 1.3 Strict"))
+  fun annualPlanLabelDoesNotClaimDiscount() {
+    assertEquals(0, BillingCycle.ANNUAL.discountPercent)
+    assertTrue(BillingCycle.ANNUAL.label.contains("illustrative"))
   }
 }
-

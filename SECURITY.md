@@ -1,7 +1,7 @@
 # BillingHub showcase prototype
 
-This repository is a UI/demo project. Billing, payment, webhook, and security flows are simulated; no real payment or verified security service is provided. Do not enter sensitive data.
+The app demonstrates Android UI layouts with local sample state only. No real payment, Stripe subscription, webhook, security service, account deletion, or data export is implemented. Do not enter sensitive information.
 
-## Reporting security issues
+## Contact
 
-Use the repository's private vulnerability reporting feature if available, or contact the maintainer through their GitHub profile. Do not disclose exploit details or personal data in a public issue.
+For general repository questions or to report a security concern, contact the repository maintainer through GitHub. Do not publish sensitive personal information or credentials in an issue.

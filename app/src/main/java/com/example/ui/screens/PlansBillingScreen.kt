@@ -42,13 +42,12 @@ fun PlansBillingScreen(
   ) {
     item {
       Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
       ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
           Text("Plan examples — not for purchase", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-          Text("Prices and features are illustrative. No checkout or subscription is available in this prototype.", style = MaterialTheme.typography.bodyMedium)
+          Text("Prices and features are illustrative. No checkout or subscription is available in this prototype.")
         }
       }
     }

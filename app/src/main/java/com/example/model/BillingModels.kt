@@ -2,7 +2,7 @@ package com.example.model
 
 enum class BillingCycle(val label: String, val discountPercent: Int) {
   MONTHLY("Monthly", 0),
-  ANNUAL("Annual (Save 20%)", 20),
+  ANNUAL("Annual (illustrative)", 0),
 }
 
 enum class SubscriptionTier(
@@ -15,66 +15,44 @@ enum class SubscriptionTier(
   val isPopular: Boolean = false,
 ) {
   STARTER(
-    id = "plan_starter",
+    id = "demo_starter",
     title = "Starter",
     monthlyPrice = 0,
     annualPrice = 0,
-    description = "Essential features for individuals and small test projects.",
-    features = listOf(
-      "Up to 3 Active Projects",
-      "1 Team Seat",
-      "5,000 API Requests/mo",
-      "Community Forum Support",
-      "Standard TLS 1.3 Encryption"
-    )
+    description = "Illustrative entry-level plan for the UI prototype.",
+    features = listOf("Example project limits", "Example usage dashboard", "No live service included"),
   ),
   PRO(
-    id = "plan_pro",
+    id = "demo_professional",
     title = "Professional",
     monthlyPrice = 29,
     annualPrice = 279,
-    description = "Full-featured billing & analytics for scaling teams.",
-    features = listOf(
-      "Unlimited Projects",
-      "10 Team Member Seats",
-      "150,000 API Requests/mo",
-      "Stripe Automated Invoicing",
-      "Webhook SLA & Realtime Retries",
-      "Priority 24/7 Email & Chat",
-      "Hardware Keystore AES-256"
-    ),
-    isPopular = true
+    description = "Illustrative plan details; prices and features are not purchasable.",
+    features = listOf("Example team controls", "Example usage dashboard", "No billing or support SLA included"),
+    isPopular = true,
   ),
   ENTERPRISE(
-    id = "plan_enterprise",
+    id = "demo_enterprise",
     title = "Enterprise",
     monthlyPrice = 99,
     annualPrice = 950,
-    description = "Mission-critical security, custom SLA, and dedicated infrastructure.",
-    features = listOf(
-      "Custom Project Limits & Seats",
-      "Unlimited High-Volume API Calls",
-      "Dedicated Stripe Merchant Account",
-      "SOC 2 Type II & HIPAA Compliance",
-      "Custom SAML/SSO Authentication",
-      "Dedicated Solutions Architect",
-      "Full Cryptographic Audit Trail"
-    )
-  )
+    description = "Illustrative plan only; no enterprise service is provided.",
+    features = listOf("Example plan comparison", "No compliance certification included", "No dedicated infrastructure included"),
+  ),
 }
 
 data class UserSubscription(
   val tier: SubscriptionTier,
   val billingCycle: BillingCycle,
-  val status: String = "Active",
-  val renewalDate: String = "Oct 18, 2026",
-  val currentPeriodUsageApi: Int = 42800,
-  val maxUsageApi: Int = 150000,
-  val activeSeats: Int = 4,
-  val maxSeats: Int = 10,
-  val stripeCustomerId: String = "cus_R9x2Kl84mQpZ01",
-  val stripeSubscriptionId: String = "sub_1Q5vY3KlzP923nmX81",
-  val paymentMethodSummary: String = "Visa ending in 4242",
+  val status: String = "Demo",
+  val renewalDate: String = "Not connected",
+  val currentPeriodUsageApi: Int = 0,
+  val maxUsageApi: Int = 0,
+  val activeSeats: Int = 0,
+  val maxSeats: Int = 1,
+  val stripeCustomerId: String = "",
+  val stripeSubscriptionId: String = "",
+  val paymentMethodSummary: String = "No payment method",
 )
 
 data class Invoice(
@@ -89,10 +67,10 @@ data class Invoice(
   val subtotal: String = amount,
   val tax: String = "$0.00",
   val currency: String = "USD",
-  val paymentMethod: String = "Visa ending in 4242",
+  val paymentMethod: String = "Not available",
   val paidAt: String = date,
   val items: List<InvoiceLineItem> = emptyList(),
-  val pdfFileName: String = "Stripe_Receipt_${invoiceNumber}.pdf"
+  val pdfFileName: String = "Receipt_${invoiceNumber}.pdf",
 ) {
   val numericAmount: Double
     get() = amount.replace("$", "").toDoubleOrNull() ?: 0.0
@@ -105,23 +83,5 @@ data class InvoiceLineItem(
   val description: String,
   val quantity: Int = 1,
   val unitAmount: String,
-  val totalAmount: String
-)
-
-data class SecurityAuditEntry(
-  val id: String,
-  val timestamp: String,
-  val eventType: String,
-  val description: String,
-  val severity: String, // "INFO", "SUCCESS", "WARN"
-  val ipAddress: String = "192.168.1.14",
-  val cryptographicProof: String,
-)
-
-data class StripeWebhookEvent(
-  val eventId: String,
-  val eventType: String,
-  val timestamp: String,
-  val status: String, // "Delivered (200 OK)", "Processing", "Pending"
-  val payloadSummary: String,
+  val totalAmount: String,
 )

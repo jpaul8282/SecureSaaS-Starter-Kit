@@ -4,12 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
@@ -26,20 +23,15 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -62,17 +54,12 @@ import com.example.ui.screens.UserGuideScreen
 import com.example.ui.theme.CyanAccent
 import com.example.ui.theme.IndigoPrimary
 import com.example.ui.theme.MyApplicationTheme
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
-    setContent {
-      MyApplicationTheme {
-        BillingHubApp()
-      }
-    }
+    setContent { MyApplicationTheme { BillingHubApp() } }
   }
 }
 
@@ -80,147 +67,60 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun BillingHubApp() {
   val billingManager = remember { StripeBillingManager() }
-  val currentKey by billingManager.stripePublishableKey.collectAsState()
   var currentTab by remember { mutableIntStateOf(0) }
-
-  // Dialog states
   var checkoutPlan by remember { mutableStateOf<Pair<SubscriptionTier, BillingCycle>?>(null) }
   var selectedInvoice by remember { mutableStateOf<Invoice?>(null) }
-  var showStripeSettings by remember { mutableStateOf(false) }
-
-  val snackbarHostState = remember { SnackbarHostState() }
-  val scope = rememberCoroutineScope()
+  var showIntegrationInfo by remember { mutableStateOf(false) }
 
   Scaffold(
     modifier = Modifier.fillMaxSize(),
-    snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       TopAppBar(
         title = {
-          androidx.compose.foundation.layout.Row(
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            Box(
-              modifier = Modifier
-                .size(32.dp)
-                .background(IndigoPrimary, CircleShape),
-              contentAlignment = Alignment.Center
-            ) {
-              Icon(
-                Icons.Default.Shield,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(18.dp)
-              )
-            }
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(10.dp))
+          androidx.compose.foundation.layout.Row {
+            Icon(Icons.Default.Shield, contentDescription = null, tint = IndigoPrimary)
+            androidx.compose.foundation.layout.Spacer(Modifier.padding(horizontal = 4.dp))
             androidx.compose.foundation.layout.Column {
-              Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-              )
-              Text(
-                text = "Stripe Billing & Security Hub",
-                style = MaterialTheme.typography.bodySmall,
-                color = CyanAccent,
-                fontSize = 11.sp
-              )
+              Text(stringResource(R.string.app_name), fontWeight = FontWeight.Bold)
+              Text("Showcase prototype · no live billing", fontSize = 11.sp, color = CyanAccent)
             }
           }
         },
         actions = {
-          IconButton(
-            onClick = { showStripeSettings = true },
-            modifier = Modifier.testTag("topbar_settings_button")
-          ) {
-            Icon(
-              Icons.Default.Settings,
-              contentDescription = "Stripe & Webhook Settings",
-              tint = MaterialTheme.colorScheme.onSurface
-            )
+          IconButton(onClick = { showIntegrationInfo = true }, modifier = Modifier.testTag("topbar_settings_button")) {
+            Icon(Icons.Default.Settings, contentDescription = "Integration status")
           }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-          containerColor = MaterialTheme.colorScheme.surface
-        )
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
       )
     },
     bottomBar = {
-      NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = IndigoPrimary,
-        tonalElevation = 8.dp
-      ) {
-        NavigationBarItem(
-          icon = { Icon(Icons.Default.Dashboard, contentDescription = "Dashboard") },
-          label = { Text("Dashboard") },
-          selected = currentTab == 0,
-          onClick = { currentTab = 0 },
-          colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = IndigoPrimary,
-            selectedTextColor = IndigoPrimary,
-            indicatorColor = IndigoPrimary.copy(alpha = 0.15f)
-          ),
-          modifier = Modifier.testTag("nav_tab_dashboard")
+      NavigationBar(containerColor = MaterialTheme.colorScheme.surface, contentColor = IndigoPrimary) {
+        val tabs = listOf(
+          "Dashboard" to Icons.Default.Dashboard,
+          "Plans" to Icons.Default.CreditCard,
+          "History" to Icons.AutoMirrored.Filled.ReceiptLong,
+          "Privacy" to Icons.Default.Security,
+          "Guide" to Icons.AutoMirrored.Filled.MenuBook,
         )
-        NavigationBarItem(
-          icon = { Icon(Icons.Default.CreditCard, contentDescription = "Plans & Billing") },
-          label = { Text("Plans") },
-          selected = currentTab == 1,
-          onClick = { currentTab = 1 },
-          colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = IndigoPrimary,
-            selectedTextColor = IndigoPrimary,
-            indicatorColor = IndigoPrimary.copy(alpha = 0.15f)
-          ),
-          modifier = Modifier.testTag("nav_tab_plans")
-        )
-        NavigationBarItem(
-          icon = { Icon(Icons.AutoMirrored.Filled.ReceiptLong, contentDescription = "Billing History") },
-          label = { Text("History") },
-          selected = currentTab == 2,
-          onClick = { currentTab = 2 },
-          colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = IndigoPrimary,
-            selectedTextColor = IndigoPrimary,
-            indicatorColor = IndigoPrimary.copy(alpha = 0.15f)
-          ),
-          modifier = Modifier.testTag("nav_tab_history")
-        )
-        NavigationBarItem(
-          icon = { Icon(Icons.Default.Security, contentDescription = "Security & Privacy") },
-          label = { Text("Security") },
-          selected = currentTab == 3,
-          onClick = { currentTab = 3 },
-          colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = IndigoPrimary,
-            selectedTextColor = IndigoPrimary,
-            indicatorColor = IndigoPrimary.copy(alpha = 0.15f)
-          ),
-          modifier = Modifier.testTag("nav_tab_security")
-        )
-        NavigationBarItem(
-          icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Users Guide") },
-          label = { Text("Guide") },
-          selected = currentTab == 4,
-          onClick = { currentTab = 4 },
-          colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = IndigoPrimary,
-            selectedTextColor = IndigoPrimary,
-            indicatorColor = IndigoPrimary.copy(alpha = 0.15f)
-          ),
-          modifier = Modifier.testTag("nav_tab_guide")
-        )
+        tabs.forEachIndexed { index, (label, icon) ->
+          NavigationBarItem(
+            icon = { Icon(icon, contentDescription = label) },
+            label = { Text(label) },
+            selected = currentTab == index,
+            onClick = { currentTab = index },
+            colors = NavigationBarItemDefaults.colors(
+              selectedIconColor = IndigoPrimary,
+              selectedTextColor = IndigoPrimary,
+              indicatorColor = IndigoPrimary.copy(alpha = 0.15f),
+            ),
+            modifier = Modifier.testTag("nav_tab_${label.lowercase()}"),
+          )
+        }
       }
-    }
+    },
   ) { innerPadding ->
-    Box(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(innerPadding)
-    ) {
+    Box(Modifier.fillMaxSize().padding(innerPadding)) {
       when (currentTab) {
         0 -> DashboardScreen(
           billingManager = billingManager,
@@ -228,66 +128,23 @@ fun BillingHubApp() {
           onNavigateToHistory = { currentTab = 2 },
           onNavigateToSecurity = { currentTab = 3 },
           onViewInvoice = { selectedInvoice = it },
-          onOpenStripeSettings = { showStripeSettings = true }
+          onOpenStripeSettings = { showIntegrationInfo = true },
         )
-        1 -> PlansBillingScreen(
-          billingManager = billingManager,
-          onSelectPlanForCheckout = { tier, cycle ->
-            checkoutPlan = Pair(tier, cycle)
-          }
-        )
-        2 -> BillingHistoryScreen(
-          billingManager = billingManager,
-          onViewInvoice = { selectedInvoice = it }
-        )
-        3 -> SecurityPrivacyScreen(
-          billingManager = billingManager
-        )
-        4 -> UserGuideScreen()
+        1 -> PlansBillingScreen(billingManager) { tier, cycle -> checkoutPlan = tier to cycle }
+        2 -> BillingHistoryScreen(billingManager) { selectedInvoice = it }
+        3 -> SecurityPrivacyScreen(billingManager)
+        else -> UserGuideScreen()
       }
     }
   }
 
-  // Stripe Checkout Dialog
   checkoutPlan?.let { (tier, cycle) ->
-    StripePaymentSheetDialog(
-      plan = tier,
-      cycle = cycle,
-      onDismiss = { checkoutPlan = null },
-      onSuccess = { plan, billingCycle, card, expiry, cvc, name ->
-        scope.launch {
-          billingManager.processSubscriptionChange(plan, billingCycle, card, expiry, cvc, name)
-          snackbarHostState.showSnackbar("Subscription upgraded to ${plan.title} successfully!")
-        }
-      }
-    )
+    StripePaymentSheetDialog(plan = tier, cycle = cycle, onDismiss = { checkoutPlan = null })
   }
-
-  // Invoice Receipt Dialog
   selectedInvoice?.let { invoice ->
-    InvoiceReceiptDialog(
-      invoice = invoice,
-      onDismiss = { selectedInvoice = null }
-    )
+    InvoiceReceiptDialog(invoice = invoice, onDismiss = { selectedInvoice = null })
   }
-
-  // Stripe Settings Dialog
-  if (showStripeSettings) {
-    StripeSettingsDialog(
-      currentKey = currentKey,
-      onDismiss = { showStripeSettings = false },
-      onSaveKey = { newKey ->
-        billingManager.updateStripeKey(newKey)
-        scope.launch {
-          snackbarHostState.showSnackbar("Stripe Publishable Key updated.")
-        }
-      },
-      onTriggerWebhook = { eventType ->
-        billingManager.simulateWebhookDelivery(eventType)
-        scope.launch {
-          snackbarHostState.showSnackbar("Simulated webhook: $eventType received.")
-        }
-      }
-    )
+  if (showIntegrationInfo) {
+    StripeSettingsDialog(onDismiss = { showIntegrationInfo = false })
   }
 }

@@ -17,12 +17,7 @@ import androidx.compose.ui.window.Dialog
 
 /** Prototype information panel; it does not configure Stripe or send webhook events. */
 @Composable
-fun StripeSettingsDialog(
-  @Suppress("UNUSED_PARAMETER") currentKey: String,
-  onDismiss: () -> Unit,
-  @Suppress("UNUSED_PARAMETER") onSaveKey: (String) -> Unit,
-  @Suppress("UNUSED_PARAMETER") onTriggerWebhook: (String) -> Unit,
-) {
+fun StripeSettingsDialog(onDismiss: () -> Unit) {
   Dialog(onDismissRequest = onDismiss) {
     Surface(
       modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -30,13 +25,10 @@ fun StripeSettingsDialog(
       color = MaterialTheme.colorScheme.surface,
       tonalElevation = 8.dp,
     ) {
-      Column(
-        modifier = Modifier.padding(24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-      ) {
+      Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text("Integration status", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Text(
-          "Demo prototype — Stripe is not connected. No API key is configured or stored here, and webhook events are not received or verified. A production integration requires a trusted backend.",
+          "Demo prototype — Stripe is not connected. No payment key is configured, and no webhook events are received or verified. A production integration requires a trusted backend.",
           style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
