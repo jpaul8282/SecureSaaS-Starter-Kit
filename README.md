@@ -8,6 +8,7 @@ BillingHub is a Kotlin / Jetpack Compose **showcase prototype** for exploring su
 
 - Android UI prototype for dashboard, illustrative plan comparison, empty billing history, and prototype/privacy information.
 - Local navigation and presentation state for exploring layouts.
+- A Retrofit API interface and OpenAPI contract describe a future trusted backend boundary. They are **not wired to the UI and not a deployed backend**.
 - Static documentation site under `docs/`.
 
 ## Not implemented
@@ -17,7 +18,7 @@ BillingHub is a Kotlin / Jetpack Compose **showcase prototype** for exploring su
 - Real customer/invoice records, receipt downloads, or account billing.
 - Backend-based export/deletion, production encryption, security audit evidence, telemetry controls, or regulatory compliance.
 
-Checkout is disabled, does not ask for card details, and never reports a payment as successful. The repository contains no real invoices or customer records in the app's initial state.
+Checkout is disabled, does not ask for card details, and never reports a payment as successful. The repository contains no real invoices or customer records in the app's initial state. See [`backend/README.md`](backend/README.md) and [`backend/openapi.yaml`](backend/openapi.yaml) for prerequisites and API boundaries; no payments or privacy requests can be made until a trusted backend and authentication are deployed.
 
 ## Build and test
 

@@ -1,0 +1,172 @@
+openapi: 3.1.0
+info:
+  title: BillingHub trusted backend contract
+  version: 1.0.0
+  description: >-
+    Contract for a separately deployed, authenticated backend. This repository does not
+    implement or deploy this API. Never expose Stripe secret keys or webhook signing secrets
+    to the Android client.
+servers:
+  - url: https://api.example.invalid
+security:
+  - bearerAuth: []
+paths:
+  /v1/billing/subscriptions:
+    post:
+      summary: Create a subscription and return Stripe PaymentSheet configuration
+      description: >-
+        Authenticate the caller and derive the customer from the server-side identity. Map the
+        requested plan and cycle to allowlisted Stripe Price IDs on the server. Ignore/reject
+        client-supplied amounts. Create the subscription with the appropriate incomplete payment
+        behavior and return only Stripe SDK client secrets needed by the app. Persist an
+        idempotency key scoped to the authenticated user. Confirm subscription state only after
+        verified Stripe webhooks.
+      operationId: createSubscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionRequest'
+      responses:
+        '200':
+          description: Configuration for the official Stripe mobile SDK; not proof of payment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentSheetConfiguration'
+        '401': { description: Missing or invalid authentication }
+        '409': { description: Idempotency conflict or subscription already exists }
+        '422': { description: Unsupported plan/cycle }
+        '503': { description: Billing provider unavailable }
+  /v1/billing/invoices:
+    get:
+      summary: List invoices belonging to the authenticated customer
+      operationId: listInvoices
+      parameters:
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, maximum: 100, default: 12 }
+      responses:
+        '200':
+          description: Server-fetched invoices. Do not synthesize records in the client.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [invoices]
+                properties:
+                  invoices:
+                    type: array
+                    items: { $ref: '#/components/schemas/Invoice' }
+        '401': { description: Missing or invalid authentication }
+  /v1/privacy/exports:
+    post:
+      summary: Request an authenticated personal-data export
+      operationId: requestDataExport
+      responses:
+        '202':
+          description: Request accepted, not yet completed. Poll the returned status URL.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PrivacyRequestResponse' }
+        '401': { description: Missing or invalid authentication }
+  /v1/privacy/deletion-requests:
+    post:
+      summary: Submit an authenticated account deletion request
+      description: >-
+        Require recent reauthentication, create a durable request, and return accepted/pending
+        status. Perform provider cancellation and deletion/retention handling server-side. Do not
+        report completion until all applicable work is confirmed; retain only records legally
+        required and disclose that policy to the user.
+      operationId: requestAccountDeletion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [confirmation]
+              properties:
+                confirmation: { type: string, const: DELETE_MY_ACCOUNT }
+      responses:
+        '202':
+          description: Request accepted, not proof deletion has completed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PrivacyRequestResponse' }
+        '401': { description: Missing or invalid authentication }
+        '403': { description: Recent reauthentication required }
+  /v1/privacy/requests/{request_id}:
+    get:
+      summary: Get the status of an export or deletion request owned by the caller
+      operationId: getPrivacyRequestStatus
+      parameters:
+        - in: path
+          name: request_id
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Current request state
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PrivacyRequestResponse' }
+        '401': { description: Missing or invalid authentication }
+        '404': { description: Request not found for the authenticated caller }
+  /v1/stripe/webhooks:
+    post:
+      summary: Stripe webhook endpoint (server only)
+      description: >-
+        Deploy on the trusted backend only. Verify Stripe-Signature using Stripe's official
+        webhook verifier against the raw request body and server-side endpoint secret. Persist
+        event IDs durably for idempotency before applying changes. Never trust client-sent webhook
+        data. This path is not an Android endpoint.
+      security: []
+      responses:
+        '200': { description: Event verified and processed or already processed }
+        '400': { description: Invalid signature or malformed event }
+        '500': { description: Temporary processing failure; Stripe may retry }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CreateSubscriptionRequest:
+      type: object
+      required: [plan_id, billing_cycle, idempotency_key]
+      properties:
+        plan_id: { type: string, enum: [plan_starter, plan_pro, plan_enterprise] }
+        billing_cycle: { type: string, enum: [monthly, annual] }
+        idempotency_key: { type: string, minLength: 16, maxLength: 128 }
+    PaymentSheetConfiguration:
+      type: object
+      required: [subscription_id, customer_id, ephemeral_key_secret, publishable_key]
+      properties:
+        subscription_id: { type: string }
+        customer_id: { type: string }
+        ephemeral_key_secret: { type: string, writeOnly: true }
+        payment_intent_client_secret: { type: [string, 'null'], writeOnly: true }
+        setup_intent_client_secret: { type: [string, 'null'], writeOnly: true }
+        publishable_key: { type: string }
+    Invoice:
+      type: object
+      required: [id, created_at, amount_minor, currency, status]
+      properties:
+        id: { type: string }
+        number: { type: [string, 'null'] }
+        created_at: { type: string, format: date-time }
+        amount_minor: { type: integer, minimum: 0 }
+        currency: { type: string, minLength: 3, maxLength: 3 }
+        status: { type: string, enum: [draft, open, paid, uncollectible, void] }
+        hosted_invoice_url: { type: [string, 'null'], format: uri }
+        pdf_url: { type: [string, 'null'], format: uri }
+    PrivacyRequestResponse:
+      type: object
+      required: [request_id, status]
+      properties:
+        request_id: { type: string }
+        status: { type: string, enum: [accepted, pending, completed, failed] }
+        status_url: { type: [string, 'null'], format: uri-reference }
