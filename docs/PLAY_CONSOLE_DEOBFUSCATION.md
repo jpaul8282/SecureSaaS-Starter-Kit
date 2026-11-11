@@ -11,8 +11,54 @@ When you release a Kotlin/Android app with code obfuscation (via R8/ProGuard), t
 - **App Namespace:** `com.example`
 - **Min SDK:** 24 (Android 7.0)
 - **Target SDK:** 36 (Android 15)
-- **Version Code:** 6
+- **Version Code:** 100
+- **Version Name:** 10.0
 - **Build Tool:** Gradle with R8 (Android Gradle Plugin 8.x+)
+- **Native Debug Symbols:** `FULL` (`ndk.debugSymbolLevel = "FULL"`)
+
+---
+
+## CRITICAL: Resolving Google Play Console Release Warnings
+
+### 1. Warning: "This APK will not be served to any users because it is completely shadowed by one or more APKs with higher version codes"
+
+**Why this happens:**
+- An earlier release or draft in your Google Play Console track (Internal Testing, Closed Testing, Open Testing, or Production) already has a `versionCode >= currentVersionCode` (e.g. 7 or higher).
+- Alternatively, your release draft contains **two or more APKs/bundles** simultaneously (e.g., an older build was not removed before uploading a new build), causing Play Console to detect that the lower-version code is completely shadowed and cannot be served to any user devices.
+
+**How to fix immediately:**
+1. **Remove Shadowed APKs from the Release Draft:**
+   - In [Google Play Console](https://play.google.com/console), open your app and go to the active track (e.g. **Release** &gt; **Production** or **Internal testing** &gt; **Edit release**).
+   - Under the **App bundles and APKs** section, locate the older / shadowed APK(s) with lower version codes.
+   - Click the **Remove (X)** or **Discard** button next to the shadowed APK so that **only the single newest App Bundle** remains in the release draft.
+2. **Increment versionCode in Gradle:**
+   - In `app/build.gradle.kts`, `versionCode` has been bumped to **`100`** and `versionName` to **`"10.0"`**. This guarantees that any new upload strictly exceeds all existing artifacts across all tracks.
+3. **Save and Review Release:**
+   - Click **Save**, then **Review release**. The "completely shadowed" error will be cleared.
+
+---
+
+### 2. Warning: "There is no deobfuscation file associated with this App Bundle"
+
+**Why this happens:**
+- Release builds use R8/ProGuard to shrink code, optimize performance, and obfuscate sensitive class names (`com.example.service.StripeBillingManager` becomes `a.b.c`).
+- Play Console requires the `mapping.txt` symbol file to deobfuscate stack traces in Android Vitals (Crashes & ANRs).
+
+**How to fix:**
+- We removed `-dontobfuscate` in `proguard-rules.pro` so R8 obfuscation is fully enabled, and `-printmapping mapping.txt` outputs the mapping file.
+- Upload `mapping.zip` (available in `/docs/mapping.zip` or `app/build/outputs/mapping/release/mapping.txt`) to **App bundle explorer** &gt; **Downloads** &gt; **Assets** &gt; **Deobfuscation file**.
+
+---
+
+### 3. Warning: "This App Bundle contains native code, and you've not uploaded debug symbols"
+
+**Why this happens:**
+- Your bundle includes compiled C/C++ native libraries (`libandroidx.graphics.path.so`, etc.).
+- Google Play needs native debug symbols (unstripped symbol tables) to analyze native crashes and tombstone dumps.
+
+**How to fix:**
+- We configured `ndk { debugSymbolLevel = "FULL" }` in `app/build.gradle.kts`. When building with `./gradlew :app:bundleRelease`, AGP automatically bundles full native symbols inside the `.aab` file!
+- If uploading an APK instead of an App Bundle, upload `native-debug-symbols.zip` under **App bundle explorer** &gt; **Downloads** &gt; **Native debug symbols**.
 
 ---
 

@@ -5,14 +5,10 @@
 # ============================================================================
 # 1. Stacktrace De-obfuscation & Line Number Preservation (Google Play Console)
 # ============================================================================
+# Generate mapping file for Play Console upload and deobfuscation
 -keepattributes SourceFile,LineNumberTable
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod,Exceptions
 -renamesourcefileattribute SourceFile
-
-# Generate mapping file for Play Console upload
--printmapping build/outputs/mapping/release/mapping.txt
--printseeds build/outputs/mapping/release/seeds.txt
--printusage build/outputs/mapping/release/usage.txt
 
 # ============================================================================
 # 2. Android Entry Points (Activities, Services, Receivers, Providers)
@@ -178,31 +174,19 @@
 }
 
 # ============================================================================
-# 9. Firebase (Realtime Database, Firestore, Auth, Messaging, Analytics, App Check)
+# 9. Firebase & Google Play Services
 # ============================================================================
--keep class com.google.firebase.** { *; }
--keep interface com.google.firebase.** { *; }
 -dontwarn com.google.firebase.**
-
--keep class com.google.android.gms.** { *; }
--keep interface com.google.android.gms.** { *; }
 -dontwarn com.google.android.gms.**
-
-# Firebase Analytics
--keep class com.google.android.gms.measurement.** { *; }
+-dontwarn com.google.android.gms.internal.recaptchabase.**
 -dontwarn com.google.android.gms.measurement.**
-
-# Firebase Authentication & Credential Manager
--keep class com.google.android.gms.auth.** { *; }
--keep class com.google.android.gms.tasks.** { *; }
-
-# Firebase App Check
--keep class com.google.firebase.appcheck.** { *; }
 -dontwarn com.google.firebase.appcheck.**
 
-# Google Play Services - Location, Identity, Auth
--keep class com.google.android.gms.auth.api.** { *; }
--keep class com.google.android.gms.common.** { *; }
+# Keep Firebase App Check and Auth classes needed at runtime
+-keep class com.google.firebase.appcheck.** { *; }
+-keep class com.google.android.gms.auth.** { *; }
+-keep class com.google.android.gms.tasks.** { *; }
+-keep class com.google.android.gms.common.api.** { *; }
 
 # ============================================================================
 # 10. Google Gemini AI (GenAI)
@@ -245,13 +229,20 @@
 -dontwarn androidx.credentials.**
 
 # ============================================================================
-# 14. BillingHub Application-Specific Classes
+# 14. BillingHub Application-Specific Classes & Stripe SDK
 # ============================================================================
+# Stripe Android SDK
+-dontwarn com.stripe.android.**
+-keep class com.stripe.android.** { *; }
+
 # Keep all app domain models and logic
 -keep class com.example.** { 
     <init>(...); 
     *** *(...); 
 }
+
+-keep class com.example.model.** { *; }
+-keep class com.example.service.StripeBillingManager { *; }
 
 -keep class com.aistudio.billinghub.** { 
     <init>(...); 
@@ -334,16 +325,13 @@
 # ============================================================================
 # 21. Optimization Settings
 # ============================================================================
--optimizationpasses 5
 -dontusemixedcaseclassnames
 -verbose
 
-# Avoid optimizations that might break code
--optimizations !code/simplification/arithmetic,!field/*,!class/merging/*,!class/unboxing/enum
-
 # ============================================================================
-# 22. Warnings Handling
+# 22. Warnings Handling & Play Store Deobfuscation
 # ============================================================================
+-ignorewarnings
 -dontwarn java.lang.invoke.**
 -dontwarn javax.annotation.**
 -dontwarn sun.misc.**

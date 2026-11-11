@@ -2,14 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=docs/">
+  <meta http-equiv="refresh" content="0; url=./docs/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BillingHub Documentation</title>
   <script>
-    window.location.replace("docs/" + window.location.search + window.location.hash);
+    (function() {
+      // Normalize pathname to ensure trailing slash before appending docs/
+      var pathname = window.location.pathname;
+      if (!pathname.endsWith('/')) {
+        pathname += '/';
+      }
+      var target = pathname + 'docs/' + window.location.search + window.location.hash;
+      window.location.replace(target);
+    })();
   </script>
 </head>
-<body style="background-color: #0a0f1d; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;">
-  <p>Redirecting to <a href="docs/" style="color: #06b6d4; text-decoration: underline;">BillingHub Documentation Portal</a>...</p>
+<body style="background-color: #0a0f1d; color: #f8fafc; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; padding: 20px;">
+  <div>
+    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(99, 102, 241, 0.2); color: #6366f1; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <h2 style="font-size: 1.25rem; margin-bottom: 8px;">BillingHub Documentation</h2>
+    <p style="color: #94a3b8; margin-bottom: 16px;">Redirecting to documentation portal...</p>
+    <p><a id="docs-redirect-link" href="./docs/" style="color: #06b6d4; text-decoration: underline; font-weight: 500;">Click here if not redirected automatically</a></p>
+  </div>
+  <script>
+    (function() {
+      var link = document.getElementById('docs-redirect-link');
+      if (link) {
+        var pathname = window.location.pathname;
+        if (!pathname.endsWith('/')) {
+          pathname += '/';
+        }
+        link.href = pathname + 'docs/' + window.location.search + window.location.hash;
+      }
+    })();
+  </script>
 </body>
 </html>

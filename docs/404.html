@@ -2,24 +2,125 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="3; url=./">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Page Not Found | BillingHub Documentation</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    :root {
+      --bg-color: #0a0f1d;
+      --card-bg: #131b2e;
+      --border-color: #283654;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --indigo: #6366f1;
+      --cyan: #06b6d4;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      max-width: 520px;
+      width: 100%;
+      padding: 40px 32px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .icon-badge {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--indigo);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--indigo), #4f46e5);
+      color: #fff;
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+  </style>
   <script>
-    setTimeout(() => {
-      window.location.replace("./" + window.location.hash);
-    }, 2000);
+    (function() {
+      // Determine base URL for GitHub Pages (handles user.github.io/repo/ vs custom domain)
+      var pathSegments = window.location.pathname.split('/').filter(Boolean);
+      var isGitHubIo = window.location.hostname.endsWith('github.io');
+      var repoBase = (isGitHubIo && pathSegments.length > 0) ? '/' + pathSegments[0] + '/' : '/';
+
+      // Check if user was navigating to /docs or /docs/ when root is already the docs portal
+      var currentPath = window.location.pathname;
+      if (currentPath.endsWith('/docs') || currentPath.endsWith('/docs/')) {
+        window.location.replace(repoBase);
+        return;
+      }
+
+      // Automatically redirect back to the docs home page
+      setTimeout(function() {
+        var homeBtn = document.getElementById('home-btn');
+        var targetUrl = (homeBtn && homeBtn.href && homeBtn.href !== '#' && !homeBtn.href.endsWith('#')) 
+          ? homeBtn.href 
+          : repoBase;
+        window.location.replace(targetUrl);
+      }, 1500);
+
+      window.addEventListener('DOMContentLoaded', function() {
+        var homeBtn = document.getElementById('home-btn');
+        if (homeBtn) {
+          homeBtn.href = repoBase;
+        }
+      });
+    })();
   </script>
 </head>
-<body class="dark-theme" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 24px;">
-  <div class="card" style="max-width: 500px; padding: 40px; border-color: var(--border-color);">
-    <div style="width: 56px; height: 56px; border-radius: 16px; background: rgba(99, 102, 241, 0.15); color: var(--indigo-primary); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+<body>
+  <div class="card">
+    <div class="icon-badge">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
     </div>
-    <h1 style="font-size: 1.8rem; margin-bottom: 8px;">Documentation Page Not Found</h1>
-    <p style="color: var(--text-secondary); margin-bottom: 24px;">The requested page could not be located. Redirecting you back to the BillingHub Documentation Portal...</p>
-    <a href="./" class="btn-download-asset" style="display: inline-flex; justify-content: center; text-decoration: none;">Return to Documentation Home</a>
+    <h1>Documentation Page Not Found</h1>
+    <p>The requested route could not be found. Redirecting you automatically back to the BillingHub Documentation Home...</p>
+    <a id="home-btn" href="./" class="btn">Return to Documentation Home</a>
   </div>
 </body>
 </html>

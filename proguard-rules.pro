@@ -106,8 +106,8 @@
 -verbose
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
-# Don't obfuscate
--dontobfuscate
+# Obfuscation enabled for release builds to reduce APK size and produce mapping.txt
+# -dontobfuscate
 
 # Verbose output
 -printmapping mapping.txt
